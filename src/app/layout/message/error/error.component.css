@@ -15,14 +15,14 @@ section{
     background: white;
     position: relative;
     cursor: default;
-    z-index: 1000;
+    z-index: 2000 !important;
 }
 
 h5{
     font-family: 'Inter', Courier, monospace;
     font-weight: 600;
     color: var(--color-theme-red);
-    
+
 }
 p{
     font-size: small;
@@ -90,7 +90,7 @@ button:hover{
     text-overflow: ellipsis;
     font-weight: bold;
   }
-  
+
   .toast-error p {
     display: -webkit-box;
     -webkit-line-clamp: 2; /* Máximo 2 líneas */

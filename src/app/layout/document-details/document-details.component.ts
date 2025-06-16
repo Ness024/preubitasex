@@ -37,7 +37,7 @@ interface ArchivoSubido {
   id: number;       // Identificador único (puede ser un timestamp o un UUID)
   nombre: string;   // Nombre del archivo (ej: "documento.pdf")
   tipo: string;     // Tipo MIME (ej: "sapplication/pdf")
-  tamaño: number;   // Tamaño en bytes 
+  tamaño: number;   // Tamaño en bytes
   file: File;       // Objeto File original (opcional, si necesitas enviarlo luego)
 }
 export interface FileData {
@@ -70,13 +70,13 @@ export class DocumentDetailsComponent {
   postingComment = false;
 
   readonly dialog = inject(MatDialog);
-  safeUrl: SafeResourceUrl="";
-  idDoc: string="";
-  coments: Comment[]= [];
+  safeUrl: SafeResourceUrl = "";
+  idDoc: string = "";
+  coments: Comment[] = [];
   files: FileData[] = [];
   document!: Document;
   archivosSubidos: ArchivoSubido[] = [];
-  FileArray: File[] = []; 
+  FileArray: File[] = [];
   permissions = {
     create: false,
     read: false,
@@ -91,18 +91,23 @@ export class DocumentDetailsComponent {
     private sanitizer: DomSanitizer,
     private time: TimeService,
     public udaService: UdaService // Inyectar UdaService para comentarios
-  ) {}
+  ) { }
   previewisvisible: boolean = false;
   documentisEdit: boolean = false;
   filesform = new FormGroup({
-      files: new FormControl<File[] | null>([])
+    files: new FormControl<File[] | null>([])
   });
 
   ngOnInit(): void {
     this.loadPermissions();
     this.idDoc = this.route.snapshot.paramMap.get('id')!; // Obtiene el id del documento
-    if(this.idDoc){
-      this.dataService.getDocumentbyId(this.idDoc).subscribe({  
+    if (this.idDoc) {
+      this.loadDocument();
+    }
+  }
+
+  loadDocument(){
+    this.dataService.getDocumentbyId(this.idDoc).subscribe({
         next: (response) => {
           const doc = response.document as Document;
           this.document = {
@@ -111,13 +116,13 @@ export class DocumentDetailsComponent {
             received_date: this.time.formatFullDate(doc.received_date),
             created_at: this.time.formatFullDate(doc.created_at),
             updated_at: doc.updated_at ? this.time.formatFullDate(doc.updated_at) : null,
-          }; 
+          };
           this.coments = (response.comments as any[]).map((c: any): Comment => ({
-          ...c,
-          id: Number(c.id),
-          created_at: this.time.getRelativeTime(c.created_at),
-          updated_at: c.updated_at ? this.time.getRelativeTime(c.updated_at) : null,
-        }));
+            ...c,
+            id: Number(c.id),
+            created_at: this.time.getRelativeTime(c.created_at),
+            updated_at: c.updated_at ? this.time.getRelativeTime(c.updated_at) : null,
+          }));
           this.files = response.document.files;
         },
         error: (error) => {
@@ -125,67 +130,67 @@ export class DocumentDetailsComponent {
           this.NotificationService.showError(error.error.message, error.error.message);
         }
       });
-    }
   }
 
   loadPermissions(): void {
-      try {
-        const storedPermissions = localStorage.getItem('permissions');
-        if (storedPermissions) {
-          this.permissions = JSON.parse(storedPermissions);
-        }
-      } catch (error) {
-        // Fallback to default permissions if there's an error
-        this.permissions = {
-          create: false,
-          read: false,
-          update: false,
-          delete: false
-        };
+    try {
+      const storedPermissions = localStorage.getItem('permissions');
+      if (storedPermissions) {
+        this.permissions = JSON.parse(storedPermissions);
+      }
+    } catch (error) {
+      // Fallback to default permissions if there's an error
+      this.permissions = {
+        create: false,
+        read: false,
+        update: false,
+        delete: false
+      };
     }
   }
 
   descargafile(idarchivo: number) {
     this.dataService.downloadDocFile(this.idDoc, idarchivo).subscribe({
-        next: (value) => {
-            const blob = value.body!;
-            const contentDisposition = value.headers.get('content-disposition');
-            
-            // Nombre por defecto (sin extensión o con una genérica)
-            let filename = 'archivo_descargado';
+      next: (value) => {
+        const blob = value.body!;
+        const contentDisposition = value.headers.get('content-disposition');
 
-            if (contentDisposition) {
-                // Extrae el nombre del archivo de content-disposition
-                const filenameRegex = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i;
-                const matches = filenameRegex.exec(contentDisposition);
-                
-                if (matches != null && matches[1]) {
-                    filename = matches[1].trim();
-                }
-            }
+        // Nombre por defecto (sin extensión o con una genérica)
+        let filename = 'archivo_descargado';
 
-            // Crear el enlace de descarga
-            const link = document.createElement('a');
-            const url = window.URL.createObjectURL(blob);
+        if (contentDisposition) {
+          // Extrae el nombre del archivo de content-disposition
+          const filenameRegex = /filename\*?=['"]?(?:UTF-\d['"]*)?([^;\r\n"']*)['"]?;?/i;
+          const matches = filenameRegex.exec(contentDisposition);
 
-            link.href = url;
-            link.download = filename;
-            document.body.appendChild(link);
-            link.click();
-
-            // Limpieza
-            document.body.removeChild(link);
-            window.URL.revokeObjectURL(url);
-        },
-        error: (err) => {;
-            // Puedes manejar el error aquí, por ejemplo mostrando un mensaje al usuario
+          if (matches != null && matches[1]) {
+            filename = matches[1].trim();
+          }
         }
+
+        // Crear el enlace de descarga
+        const link = document.createElement('a');
+        const url = window.URL.createObjectURL(blob);
+
+        link.href = url;
+        link.download = filename;
+        document.body.appendChild(link);
+        link.click();
+
+        // Limpieza
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      },
+      error: (err) => {
+        ;
+        // Puedes manejar el error aquí, por ejemplo mostrando un mensaje al usuario
+      }
     });
-}
-  deletedoc(){
+  }
+  deletedoc() {
     const id = this.route.snapshot.paramMap.get('id');
-    if(id){
-      this.dataService.deleteDocument(id).subscribe({  
+    if (id) {
+      this.dataService.deleteDocument(id).subscribe({
         next: (response: ApiResponse) => {
           this.router.navigate(['/main']);
           this.NotificationService.showSuccess('Documento borrado con exito', `El documento ${id} fue borrado`); // Muestra la notificación de éxito
@@ -200,49 +205,49 @@ export class DocumentDetailsComponent {
 
 
   onFileArraySelected(event: Event) {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files.length > 0) {
-    const file = input.files[0];
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files.length > 0) {
+      const file = input.files[0];
 
-    const extension = file.name.split('.').pop()?.toLowerCase();
-    const extensionesPermitidas = ['pdf', 'xlsx', 'docx'];
-    if (!extension || !extensionesPermitidas.includes(extension)) {
-      this.NotificationService.showError(
-        'Formato incorrecto',
-        'Solo se permiten archivos PDF, XLSX o DOCX'
-      );
-      return;
+      const extension = file.name.split('.').pop()?.toLowerCase();
+      const extensionesPermitidas = ['pdf', 'xlsx', 'docx'];
+      if (!extension || !extensionesPermitidas.includes(extension)) {
+        this.NotificationService.showError(
+          'Formato incorrecto',
+          'Solo se permiten archivos PDF, XLSX o DOCX'
+        );
+        return;
+      }
+
+      if (file.size > 5 * 1024 * 1024) {
+        this.NotificationService.showError(
+          'Archivo demasiado grande',
+          'El tamaño máximo permitido es 5MB'
+        );
+        return;
+      }
+
+      const nuevoArchivo: ArchivoSubido = {
+        id: Date.now(),
+        nombre: file.name,
+        tipo: extension,
+        tamaño: file.size,
+        file: file
+      };
+
+      this.archivosSubidos.push(nuevoArchivo);
+      this.FileArray.push(nuevoArchivo.file);
+
+      // 🔽 Actualiza el valor del FormControl en el formulario reactivo
+      this.filesform.patchValue({
+        files: this.FileArray
+      });
     }
-
-    if (file.size > 5 * 1024 * 1024) {
-      this.NotificationService.showError(
-        'Archivo demasiado grande',
-        'El tamaño máximo permitido es 5MB'
-      );
-      return;
-    }
-
-    const nuevoArchivo: ArchivoSubido = {
-      id: Date.now(),
-      nombre: file.name,
-      tipo: extension,
-      tamaño: file.size,
-      file: file
-    };
-
-    this.archivosSubidos.push(nuevoArchivo);
-    this.FileArray.push(nuevoArchivo.file);
-
-    // 🔽 Actualiza el valor del FormControl en el formulario reactivo
-    this.filesform.patchValue({
-      files: this.FileArray
-    });
-  }
   }
   eliminarArchivo(id: number) {
     this.archivosSubidos = this.archivosSubidos.filter(archivo => archivo.id !== id);
   }
-  closePreview(){
+  closePreview() {
     this.previewisvisible = false;
   }
 
@@ -306,37 +311,37 @@ export class DocumentDetailsComponent {
     }
 
     const id = this.route.snapshot.paramMap.get('id');
-    if (id) { 
+    if (id) {
       this.dataService.uploadFiles(id, formData).subscribe({
         next: (response) => {
           this.NotificationService.showSuccess('Archivos subidos con exito', `Los archivos fueron subidos`); // Muestra la notificación de éxito
           setTimeout(() => {
             window.location.reload();
-          }, 500); 
+          }, 500);
         },
-        error: (error) => { 
+        error: (error) => {
           this.NotificationService.showError('Error al subir archivos', error.error.message);
         }
       });
     }
   }
   changestatusopen = false;
-  changestatus(){
+  changestatus() {
     this.changestatusopen = true;
   }
-cerrarModal(){
-  this.changestatusopen = false;
-
-}
-  openDialog(): void{
-      const dialogRef = this.dialog.open(DialogContentExampleDialog, {
-      });
-      dialogRef.afterClosed().subscribe(result => {
-        if (result) {
-          this.deletedoc();
-        }
-      });
-    }
+  cerrarModal() {
+    this.changestatusopen = false;
+    this.loadDocument();
+  }
+  openDialog(): void {
+    const dialogRef = this.dialog.open(DialogContentExampleDialog, {
+    });
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.deletedoc();
+      }
+    });
+  }
 }
 
 @Component({

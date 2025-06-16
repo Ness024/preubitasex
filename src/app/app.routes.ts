@@ -29,7 +29,7 @@ export const routes: Routes = [
         canActivate: [NoAuthGuard]
     },
     {
-        path: 'a',
+        path: 'cambiar-estado/:id',
         component: ChangestatusComponent,
     },
     {

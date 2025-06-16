@@ -44,7 +44,7 @@ button {
     text-decoration: none;
     color: #a0a0a0;
     font-family: 'Roboto Flex', Courier, monospace;
-    margin-left: 1em; 
+    margin-left: 1em;
     font-size: small;
     background: none;
     border: none;
@@ -129,7 +129,7 @@ svg{
     background: rgb(231, 246, 255);
 }
 
-.estatus_6 { 
+.estatus_6 {
     color: var(--color-theme-red);
     background: #ffe4e4;
 }
@@ -151,12 +151,12 @@ svg{
 }
 
 fieldset {
-    width: 100%; 
-    max-width: 100%; 
+    width: 100%;
+    max-width: 100%;
     resize: vertical;
     box-sizing: border-box;
     border: none;
-}   
+}
 
 input[type="file"]{
     opacity: 0; /* Oculta el input pero lo mantiene funcional */
@@ -493,7 +493,7 @@ input[type="file"]{
   font-weight: 600;
   cursor: pointer;
   color: #080809
-}   
+}
 
 .ac2 .ac1 {
   display: flex;
@@ -511,11 +511,11 @@ input[type="file"]{
 .ac2 .ac1 u:hover {
   text-decoration: underline;
   cursor: pointer
-}            
+}
 
 .ac2 .ac1 :nth-child(2){
   font-weight: 700
-}  
+}
 
 .ac2 .ac1 .ac0 {
   position: relative;
@@ -594,7 +594,7 @@ input[type="file"]{
 }
 .ag5 > .ag7 ~ .ag9 {
   top: -24px
-}            
+}
 .ag8{
   position: absolute;
   height: 48px;
@@ -684,22 +684,59 @@ input[type="file"]{
   width: fit-content;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
   text-align: center;
-      display: flex;
-    flex-direction: column;
-    align-items: center;
+  display: flex;
+  flex-direction: column;
+  align-items: end;
+  overflow-x: hidden;
+  overflow-y: auto;
+  max-height: 90vh;
 }
 
 .modal-button {
-  margin-top: 1.5rem;
-  padding: 0.5rem 1rem;
-  background-color: #333;
-  color: #fff;
+  position: absolute;
+  background: none;
   border: none;
-  border-radius: 6px;
+  padding: 0;
+  border-radius: 50%;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background 0.2s, box-shadow 0.2s;
+  outline: none;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.icon-close {
+  width: 35px;
+  height: 35px;
+  display: block;
+
 }
 
-.modal-button:hover {
-  background-color: #555;
+.icon-close .circle {
+  fill: transparent;
+  transition: fill 0.3s ease;
+}
+
+.icon-close .line {
+  stroke: #333;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  transition: stroke 0.3s;
+}
+
+.modal-button:hover .circle {
+  fill: var(--color-theme-blue, #3b82f6);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+
+}
+
+.modal-button:hover .line {
+  stroke: #fff;
+}
+
+.modal-button:active {
+  box-shadow: 0 1px 4px rgba(0,0,0,0.10);
+  background: #eaf1fb;
 }

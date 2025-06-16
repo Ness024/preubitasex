@@ -22,7 +22,7 @@ export class DataService{
     start_date?: string; // Formato 'YYYY-MM-DD'
     end_date?: string;   // Formato 'YYYY-MM-DD'
   }): Observable<any> {
-    
+
     // Construye los parámetros de la URL
     const params = new URLSearchParams();
 
@@ -33,7 +33,7 @@ export class DataService{
     if (options?.start_date) params.append('start_date', options.start_date);
     if (options?.end_date) params.append('end_date', options.end_date);
 
-    const url = params.toString() 
+    const url = params.toString()
       ? `${this.API_URL}?${params.toString()}`
       : this.API_URL;
 
@@ -44,7 +44,7 @@ export class DataService{
     return this.http.get(page);
   }
   createDocument(): Observable<any> {
-    return this.http.get(`${this.API_URL}/create`);  
+    return this.http.get(`${this.API_URL}/create`);
   }
 
   storeDocument(formData: FormData): Observable<any> {
@@ -84,14 +84,25 @@ export class DataService{
 
   downloadDocFile(id: string, file: number) {
   return this.http.get(`${this.API_URL}/${id}/files/${file}/download`, {
-    responseType: 'blob', 
-    observe: 'response'  
+    responseType: 'blob',
+    observe: 'response'
   });
 }
   previewDocFile(id: string, file: number){
     return this.http.get(`${this.API_URL}/${id}/files/${file}/preview`, {
-      responseType: 'blob', 
+      responseType: 'blob',
       observe: 'response'
     });
   }
+
+  // Añade estos métodos a tu DataService
+updateDocumentStatus(documentId: string, statusData: any): Observable<any> {
+  return this.http.post(`${this.API_URL}/${documentId}/status`, statusData);
+}
+
+storeRelatedDocument(mainDocumentId: string, documentData: FormData): Observable<any> {
+  // Si necesitas relacionar el nuevo documento con el principal
+  documentData.append('related_document_id', mainDocumentId);
+  return this.storeDocument(documentData); // Reutiliza el método existente
+}
 }

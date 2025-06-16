@@ -4,36 +4,19 @@
   <div class="document-details">
     <div class="document-details__actions">
       @if(permissions.update) {
-      <button
-        [routerLink]="['/main/editar', document.id.toString()]"
-        class="edit"
-      >
+      <button [routerLink]="['/main/editar', document.id.toString()]" class="edit">
         Editar
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="#currentColor"
-            d="M6 22q-.825 0-1.412-.587T4 20V4q0-.825.588-1.412T6 2h8l6 6v3q-.575.125-1.075.4t-.925.7l-6 5.975V22zm8 0v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM13 9h5l-5-5l5 5l-5-5z"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#currentColor"
+            d="M6 22q-.825 0-1.412-.587T4 20V4q0-.825.588-1.412T6 2h8l6 6v3q-.575.125-1.075.4t-.925.7l-6 5.975V22zm8 0v-3.075l5.525-5.5q.225-.225.5-.325t.55-.1q.3 0 .575.113t.5.337l.925.925q.2.225.313.5t.112.55t-.1.563t-.325.512l-5.5 5.5zm6.575-5.6l.925-.975l-.925-.925l-.95.95zM13 9h5l-5-5l5 5l-5-5z" />
         </svg>
       </button>
       } @if(permissions.delete) {
       <button class="delete" (click)="openDialog()">
         Eliminar
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="20"
-          height="20"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="#currentColor"
-            d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24">
+          <path fill="#currentColor"
+            d="M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z" />
         </svg>
       </button>
       }
@@ -94,10 +77,7 @@
       <ul class="file-list">
         @for (file of files; track $index) {
         <li class="file-list__item">
-          <button
-            class="file-list__item_button"
-            (click)="descargafile(file.id)"
-          >
+          <button class="file-list__item_button" (click)="descargafile(file.id)">
             <div class="file-icon">
               @switch (file.file_extension) { @case ("pdf") {
               <app-pdf></app-pdf>
@@ -106,18 +86,27 @@
               } @case ("xlsx") {
               <app-xlsx></app-xlsx>
               } @default {
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path fill="#F1C40F" d="M0 100V0h72l28 28v72z"/><path fill="#F39C12" d="M0 100V72L72 0l28 28l-72 72z"/><path fill="#FFF55B" d="M72 0h1l27 27v1H72z"/><path fill="#fff" d="M34.828 55.721v3.853H23.29v7.704h9.738v3.87H23.29V81.75h-4.878V55.721zm9.252 26.028h-4.86V55.721h4.86zm10.691-3.996h10.422v3.996H49.93V55.721h4.842zm30.187-22.032v3.853H73.42v7.218h9.09v3.726h-9.09v7.362h11.538v3.87H68.542V55.721z"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+                <path fill="#F1C40F" d="M0 100V0h72l28 28v72z" />
+                <path fill="#F39C12" d="M0 100V72L72 0l28 28l-72 72z" />
+                <path fill="#FFF55B" d="M72 0h1l27 27v1H72z" />
+                <path fill="#fff"
+                  d="M34.828 55.721v3.853H23.29v7.704h9.738v3.87H23.29V81.75h-4.878V55.721zm9.252 26.028h-4.86V55.721h4.86zm10.691-3.996h10.422v3.996H49.93V55.721h4.842zm30.187-22.032v3.853H73.42v7.218h9.09v3.726h-9.09v7.362h11.538v3.87H68.542V55.721z" />
+              </svg>
               }
-            }
+              }
             </div>
             {{ file.original_name }}
             <span class="hover-icon">
-              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512"><path fill="currentColor" d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24m296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24m-124 88c0-11-9-20-20-20s-20 9-20 20s9 20 20 20s20-9 20-20m64 0c0-11-9-20-20-20s-20 9-20 20s9 20 20 20s20-9 20-20"/></svg>
+              <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 512 512">
+                <path fill="currentColor"
+                  d="M216 0h80c13.3 0 24 10.7 24 24v168h87.7c17.8 0 26.7 21.5 14.1 34.1L269.7 378.3c-7.5 7.5-19.8 7.5-27.3 0L90.1 226.1c-12.6-12.6-3.7-34.1 14.1-34.1H192V24c0-13.3 10.7-24 24-24m296 376v112c0 13.3-10.7 24-24 24H24c-13.3 0-24-10.7-24-24V376c0-13.3 10.7-24 24-24h146.7l49 49c20.1 20.1 52.5 20.1 72.6 0l49-49H488c13.3 0 24 10.7 24 24m-124 88c0-11-9-20-20-20s-20 9-20 20s9 20 20 20s20-9 20-20m64 0c0-11-9-20-20-20s-20 9-20 20s9 20 20 20s20-9 20-20" />
+              </svg>
             </span>
           </button>
         </li>
         }@empty {
-          Sin Archivos
+        Sin Archivos
         }
       </ul>
     </div>
@@ -128,20 +117,12 @@
         Adjuntar Documento (PDF, DOCX, XLSX)
         <label for="files" class="file-label">
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-            <path
-              fill="currentColor"
-              d="M4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h5.175q.4 0 .763.15t.637.425L12 6h9q.425 0 .713.288T22 7t-.288.713T21 8h-9.825l-2-2H4v12l1.975-6.575q.2-.65.738-1.037T7.9 10h12.9q1.025 0 1.613.813t.312 1.762l-1.8 6q-.2.65-.737 1.038T19 20zm2.1-2H19l1.8-6H7.9zM4 11.45V6zM6.1 18l1.8-6z"
-            />
+            <path fill="currentColor"
+              d="M4 20q-.825 0-1.412-.587T2 18V6q0-.825.588-1.412T4 4h5.175q.4 0 .763.15t.637.425L12 6h9q.425 0 .713.288T22 7t-.288.713T21 8h-9.825l-2-2H4v12l1.975-6.575q.2-.65.738-1.037T7.9 10h12.9q1.025 0 1.613.813t.312 1.762l-1.8 6q-.2.65-.737 1.038T19 20zm2.1-2H19l1.8-6H7.9zM4 11.45V6zM6.1 18l1.8-6z" />
           </svg>
           Arraste el archivo aquí o haga clic para seleccionar
-          <input
-            type="file"
-            id="document_file"
-            name="document_file"
-            (change)="onFileArraySelected($event)"
-            accept=".pdf, .docx, .xlsx"
-            class="file-input"
-          />
+          <input type="file" id="document_file" name="document_file" (change)="onFileArraySelected($event)"
+            accept=".pdf, .docx, .xlsx" class="file-input" />
         </label>
         <ul class="file-list">
           @for (archivo of archivosSubidos; track $index) {
@@ -156,20 +137,12 @@
               } }
             </div>
             <p>{{ archivo.nombre }}</p>
-            <button
-              type="button"
-              class="delete-file"
-              (click)="eliminarArchivo(archivo.id)"
-            >
+            <button type="button" class="delete-file" (click)="eliminarArchivo(archivo.id)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256">
                 <g fill="currentColor">
+                  <path d="M224 128a96 96 0 1 1-96-96a96 96 0 0 1 96 96" opacity=".2" />
                   <path
-                    d="M224 128a96 96 0 1 1-96-96a96 96 0 0 1 96 96"
-                    opacity=".2"
-                  />
-                  <path
-                    d="M165.66 101.66L139.31 128l26.35 26.34a8 8 0 0 1-11.32 11.32L128 139.31l-26.34 26.35a8 8 0 0 1-11.32-11.32L116.69 128l-26.35-26.34a8 8 0 0 1 11.32-11.32L128 116.69l26.34-26.35a8 8 0 0 1 11.32 11.32M232 128A104 104 0 1 1 128 24a104.11 104.11 0 0 1 104 104m-16 0a88 88 0 1 0-88 88a88.1 88.1 0 0 0 88-88"
-                  />
+                    d="M165.66 101.66L139.31 128l26.35 26.34a8 8 0 0 1-11.32 11.32L128 139.31l-26.34 26.35a8 8 0 0 1-11.32-11.32L116.69 128l-26.35-26.34a8 8 0 0 1 11.32-11.32L128 116.69l26.34-26.35a8 8 0 0 1 11.32 11.32M232 128A104 104 0 1 1 128 24a104.11 104.11 0 0 1 104 104m-16 0a88 88 0 1 0-88 88a88.1 88.1 0 0 0 88-88" />
                 </g>
               </svg>
             </button>
@@ -178,20 +151,9 @@
         </ul>
       </fieldset>
       <button type="submit" class="btn-save">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="1em"
-          height="1em"
-          viewBox="0 0 24 24"
-        >
-          <path
-            fill="none"
-            stroke="currentColor"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M17 21H7m10 0h.803c1.118 0 1.677 0 2.104-.218c.377-.192.683-.498.875-.874c.218-.427.218-.987.218-2.105V9.22c0-.45 0-.675-.048-.889a2 2 0 0 0-.209-.545c-.106-.19-.256-.355-.55-.682l-2.755-3.062c-.341-.378-.514-.57-.721-.708a2 2 0 0 0-.61-.271C15.863 3 15.6 3 15.075 3H6.2c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C3 4.52 3 5.08 3 6.2v11.6c0 1.12 0 1.68.218 2.107c.192.377.497.683.874.875c.427.218.987.218 2.105.218H7m10 0v-3.803c0-1.118 0-1.678-.218-2.105a2 2 0 0 0-.875-.874C15.48 14 14.92 14 13.8 14h-3.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C7 15.52 7 16.08 7 17.2V21m8-14H9"
-          />
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+          <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M17 21H7m10 0h.803c1.118 0 1.677 0 2.104-.218c.377-.192.683-.498.875-.874c.218-.427.218-.987.218-2.105V9.22c0-.45 0-.675-.048-.889a2 2 0 0 0-.209-.545c-.106-.19-.256-.355-.55-.682l-2.755-3.062c-.341-.378-.514-.57-.721-.708a2 2 0 0 0-.61-.271C15.863 3 15.6 3 15.075 3H6.2c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C3 4.52 3 5.08 3 6.2v11.6c0 1.12 0 1.68.218 2.107c.192.377.497.683.874.875c.427.218.987.218 2.105.218H7m10 0v-3.803c0-1.118 0-1.678-.218-2.105a2 2 0 0 0-.875-.874C15.48 14 14.92 14 13.8 14h-3.6c-1.12 0-1.68 0-2.108.218a2 2 0 0 0-.874.874C7 15.52 7 16.08 7 17.2V21m8-14H9" />
         </svg>
       </button>
     </form>
@@ -199,27 +161,33 @@
   <section>
     Comentarios
     <div class="af7">
-          <div class="ag5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 64 64"><path fill="currentColor" d="M32 36.8c8.3 0 15-6.7 15-15s-6.7-15-15-15s-15 6.7-15 15s6.7 15 15 15m0-25.5c5.8 0 10.5 4.7 10.5 10.5S37.8 32.3 32 32.3s-10.5-4.7-10.5-10.5S26.2 11.3 32 11.3m29.5 41.9C53.3 46.3 42.9 42.5 32 42.5S10.7 46.3 2.5 53.2c-.9.8-1.1 2.2-.3 3.2c.8.9 2.2 1.1 3.2.3C12.8 50.4 22.2 47 32 47s19.2 3.4 26.5 9.6c.4.4.9.5 1.5.5s1.3-.3 1.7-.8c.8-.9.7-2.3-.2-3.1"/></svg>
-             <form [formGroup]="commentForm" (ngSubmit)="postComment()" class="ac2">
-              <div class="ac5 brillo" title="Facebook's comment">
-              <textarea formControlName="comment" placeholder="Escribe un comentario..."  class="no-comments"></textarea>                
-                <p class="ac3"></p>
-              </div>
-              <div class="ac1">
-                <u>
-                  <button type="submit" [disabled]="postingComment" class="text-blue-500 hover:underline">Comentar</button>
-                </u>
-              </div>
-            </form>
+      <div class="ag5">
+        <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 64 64">
+          <path fill="currentColor"
+            d="M32 36.8c8.3 0 15-6.7 15-15s-6.7-15-15-15s-15 6.7-15 15s6.7 15 15 15m0-25.5c5.8 0 10.5 4.7 10.5 10.5S37.8 32.3 32 32.3s-10.5-4.7-10.5-10.5S26.2 11.3 32 11.3m29.5 41.9C53.3 46.3 42.9 42.5 32 42.5S10.7 46.3 2.5 53.2c-.9.8-1.1 2.2-.3 3.2c.8.9 2.2 1.1 3.2.3C12.8 50.4 22.2 47 32 47s19.2 3.4 26.5 9.6c.4.4.9.5 1.5.5s1.3-.3 1.7-.8c.8-.9.7-2.3-.2-3.1" />
+        </svg>
+        <form [formGroup]="commentForm" (ngSubmit)="postComment()" class="ac2">
+          <div class="ac5 brillo" title="Facebook's comment">
+            <textarea formControlName="comment" placeholder="Escribe un comentario..." class="no-comments"></textarea>
+            <p class="ac3"></p>
           </div>
+          <div class="ac1">
+            <u>
+              <button type="submit" [disabled]="postingComment" class="text-blue-500 hover:underline">Comentar</button>
+            </u>
+          </div>
+        </form>
+      </div>
     </div>
     <section class="aa0">
       @for (comment of coments; track $index) {
-        <div class="af9">
+      <div class="af9">
         <div class="af7">
           <div class="ag5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 64 64"><path fill="currentColor" d="M32 36.8c8.3 0 15-6.7 15-15s-6.7-15-15-15s-15 6.7-15 15s6.7 15 15 15m0-25.5c5.8 0 10.5 4.7 10.5 10.5S37.8 32.3 32 32.3s-10.5-4.7-10.5-10.5S26.2 11.3 32 11.3m29.5 41.9C53.3 46.3 42.9 42.5 32 42.5S10.7 46.3 2.5 53.2c-.9.8-1.1 2.2-.3 3.2c.8.9 2.2 1.1 3.2.3C12.8 50.4 22.2 47 32 47s19.2 3.4 26.5 9.6c.4.4.9.5 1.5.5s1.3-.3 1.7-.8c.8-.9.7-2.3-.2-3.1"/></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 64 64">
+              <path fill="currentColor"
+                d="M32 36.8c8.3 0 15-6.7 15-15s-6.7-15-15-15s-15 6.7-15 15s6.7 15 15 15m0-25.5c5.8 0 10.5 4.7 10.5 10.5S37.8 32.3 32 32.3s-10.5-4.7-10.5-10.5S26.2 11.3 32 11.3m29.5 41.9C53.3 46.3 42.9 42.5 32 42.5S10.7 46.3 2.5 53.2c-.9.8-1.1 2.2-.3 3.2c.8.9 2.2 1.1 3.2.3C12.8 50.4 22.2 47 32 47s19.2 3.4 26.5 9.6c.4.4.9.5 1.5.5s1.3-.3 1.7-.8c.8-.9.7-2.3-.2-3.1" />
+            </svg>
             <div class="ac2">
               <div class="ac5" title="Facebook's comment">
                 <p class="ac4">{{comment.user.name}}</p>
@@ -232,8 +200,11 @@
             </div>
           </div>
           @if(comment.replies.length) {
-            <div class="ag5">
-            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 64 64"><path fill="currentColor" d="M32 36.8c8.3 0 15-6.7 15-15s-6.7-15-15-15s-15 6.7-15 15s6.7 15 15 15m0-25.5c5.8 0 10.5 4.7 10.5 10.5S37.8 32.3 32 32.3s-10.5-4.7-10.5-10.5S26.2 11.3 32 11.3m29.5 41.9C53.3 46.3 42.9 42.5 32 42.5S10.7 46.3 2.5 53.2c-.9.8-1.1 2.2-.3 3.2c.8.9 2.2 1.1 3.2.3C12.8 50.4 22.2 47 32 47s19.2 3.4 26.5 9.6c.4.4.9.5 1.5.5s1.3-.3 1.7-.8c.8-.9.7-2.3-.2-3.1"/></svg>
+          <div class="ag5">
+            <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 64 64">
+              <path fill="currentColor"
+                d="M32 36.8c8.3 0 15-6.7 15-15s-6.7-15-15-15s-15 6.7-15 15s6.7 15 15 15m0-25.5c5.8 0 10.5 4.7 10.5 10.5S37.8 32.3 32 32.3s-10.5-4.7-10.5-10.5S26.2 11.3 32 11.3m29.5 41.9C53.3 46.3 42.9 42.5 32 42.5S10.7 46.3 2.5 53.2c-.9.8-1.1 2.2-.3 3.2c.8.9 2.2 1.1 3.2.3C12.8 50.4 22.2 47 32 47s19.2 3.4 26.5 9.6c.4.4.9.5 1.5.5s1.3-.3 1.7-.8c.8-.9.7-2.3-.2-3.1" />
+            </svg>
             <div class="ac2">
               <div class="ac5" title="Facebook's comment">
                 <p class="ac4">Roberval Callegari</p>
@@ -246,17 +217,25 @@
           </div>
           }
         </div>
-        </div>  
+      </div>
       }@empty {
       <p class="no-comments">No hay comentarios</p>
       }
-      
+
     </section>
     @if (changestatusopen) {
-      <div class="modal-overlays">
-        <div class="modal-contents">
-          <app-changestatus></app-changestatus>
-        <button class="modal-button" style="margin: 10px 0;" (click)="cerrarModal()">Cerrar</button>
+    <div class="modal-overlays">
+      <div class="modal-contents">
+        <app-changestatus [documentId]="document.id" [sendStatusId]="document.status_id" (closed)="cerrarModal()">
+        </app-changestatus>
+
+        <button class="modal-button" (click)="cerrarModal()">
+          <svg viewBox="0 0 24 24" class="icon-close">
+            <circle class="circle" cx="12" cy="12" r="12" />
+            <line class="line" x1="16" y1="8" x2="8" y2="16" />
+            <line class="line" x1="8" y1="8" x2="16" y2="16" />
+          </svg>
+        </button>
       </div>
     </div>
     }
