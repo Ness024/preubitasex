@@ -52,7 +52,7 @@ export class AddDocumentComponent {
     private notificationService: NotificationService,
     @Optional() public dialogRef?: MatDialogRef<AddDocumentComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
-    //@Optional() @Inject(MAT_DIALOG_DATA) public data?: { parentId: number | null; mode: 'main' | 'related' }
+
 
   ) {
     //console.log("aqui el parent nbb::",data)
@@ -206,4 +206,9 @@ export class AddDocumentComponent {
   }
 
 
+  onCancel() {
+    if (this.dialogRef) {
+      this.dialogRef.close('cancelled');
+    }
+  }
 }

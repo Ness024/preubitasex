@@ -46,7 +46,7 @@ body{
     --mat-sys-on-surface: #000;
     --mat-sys-surface-variant: #ffffff;
     --mat-sys-primary: #31a85f;
-    
+
     --mat-sys-corner-extra-large:15px;
 }
 
@@ -54,7 +54,7 @@ body{
 
 p{
     font-family: 'Nunito Sans', sans-serif;
-}	
+}
 
 app-main{
     display: flex;
@@ -79,7 +79,7 @@ app-header {
         position: absolute;
         z-index: 2;
     }
-    
+
 }
 app-icon-search {
     height: 45%;
@@ -100,11 +100,11 @@ menu-overrides {
 .mat-menu-item {
     color: blue !important;
   }
-  
+
   button.mat-menu-item{
       background-color: white;
   }
-  
+
   button.mat-menu-item:hover {
       background-color: blue;
       color: #fff !important;
@@ -114,12 +114,12 @@ app-login{
     display: grid;
     width: 100%;
     height: 100%;
-    background: 
+    background:
         linear-gradient(rgba(0, 0, 75, 0.781), rgba(45, 45, 185, 0.548)),
         url('/ww.webp');
     background-size: cover;
-    background-position: center; 
-    background-repeat: no-repeat; 
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 .mat-mdc-menu-panel{
@@ -138,3 +138,12 @@ app-login{
 .input-form::placeholder{
     color: #718EBF;
 }
+
+.mat-tooltip.tooltip-received    { background: #a0a0a0 !important; color: #fff !important; }
+.mat-tooltip.tooltip-in_process  { background: orange !important; color: #fff !important; }
+.mat-tooltip.tooltip-in_signing  { background: purple !important; color: #fff !important; }
+.mat-tooltip.tooltip-in_signed   { background: #4caf50 !important; color: #fff !important; }
+.mat-tooltip.tooltip-completed   { background: #03a9f4 !important; color: #fff !important; }
+.mat-tooltip.tooltip-delivered   { background: #2196f3 !important; color: #fff !important; }
+.mat-tooltip.tooltip-archived    { background: #1a237e !important; color: #fff !important; }
+.mat-tooltip.tooltip-cancelled   { background: #f44336 !important; color: #fff !important; }

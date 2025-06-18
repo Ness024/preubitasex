@@ -1,6 +1,6 @@
 
 import { Component, Input, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
-import { FormGroup, FormControl, Validators, FormBuilder} from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -13,6 +13,8 @@ import { NotificationService } from '../../service/notification.service';
 import { DataService } from '../../service/data.service';
 
 import { AddDocumentComponent } from '../add-document/add-document.component';
+import { FormInputErrorComponent } from '../../shared/form-input-error/form-input-error.component';
+import { ErrorComponent } from "../message/error/error.component";
 
 interface StatusForm {
   status_id: string;
@@ -42,7 +44,10 @@ interface StatusForm {
 
 @Component({
   selector: 'app-changestatus',
-  imports: [CommonModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatTooltipModule],
+  imports: [
+    CommonModule, FormsModule, ReactiveFormsModule, MatDialogModule, MatTooltipModule,
+    FormInputErrorComponent
+  ],
   templateUrl: './changestatus.component.html',
   styleUrl: './changestatus.component.css',
 })
@@ -72,6 +77,7 @@ export class ChangestatusComponent implements OnChanges {
   currentStatusId = '';
   departments: any[] = [];
   statusForm!: FormGroup;
+  formSubmitted = false;
 
   private initForms() {
     this.statusForm = this.fb.group({
@@ -116,11 +122,14 @@ export class ChangestatusComponent implements OnChanges {
     const input = event.target as HTMLInputElement;
     this.contenidoModal = input.value;
     this.currentStatusId = input.value;
+
+    this.resetFormState();
     this.updateFormControls();
   }
 
   updateFormControls() {
     const formGroup = this.statusForm.get('form') as FormGroup;
+
     Object.keys(formGroup.controls).forEach(control => {
       formGroup.removeControl(control);
     });
@@ -182,16 +191,46 @@ export class ChangestatusComponent implements OnChanges {
     });
   }
 
+  getFormControl(controlName: string): AbstractControl | null {
+    return (this.statusForm.get(`form`) as FormGroup).get(controlName);
+  }
+
+  getErrorMessages(fieldName: string): any {
+    return (this.errorMessages as any)[fieldName] || {};
+  }
+
+  resetFormState(): void {
+    this.formSubmitted = false;
+
+    const formGroup = this.statusForm.get('form') as FormGroup;
+    formGroup.reset();
+    Object.keys(formGroup.controls).forEach(key => {
+      formGroup.controls[key].setErrors(null);
+      formGroup.controls[key].markAsUntouched();
+      formGroup.controls[key].markAsPristine();
+    });
+
+    this.statusForm.get('comment')?.reset();
+    this.statusForm.get('comment')?.setErrors(null);
+    this.statusForm.get('comment')?.markAsUntouched();
+  }
+
   handleSave() {
+    this.formSubmitted = true;
+
+    Object.keys(this.statusForm.controls).forEach(key => {
+      this.statusForm.get(key)?.markAsTouched();
+    });
+
+    if (this.statusForm.invalid) {
+      this.notificationService.showError('Error', 'Complete todos los campos requeridos');
+      return;
+    }
     const statusData: StatusForm = {
       status_id: this.statusForm.value.status_id!,
       comment: this.statusForm.value.comment || undefined,
       form: this.statusForm.value.form || {}
     };
-    this.saveStatusChange(statusData);
-  }
-
-  saveStatusChange(statusData: StatusForm) {
     this.dataService.updateDocumentStatus(this.documentId, statusData).subscribe({
       next: (response) => {
         this.notificationService.showSuccess('Éxito', response.message || 'Estado actualizado correctamente');
@@ -204,8 +243,27 @@ export class ChangestatusComponent implements OnChanges {
   }
 
   continueToDocument() {
+
+    this.formSubmitted = true;
+
+    Object.keys(this.statusForm.controls).forEach(key => {
+      this.statusForm.get(key)?.markAsTouched();
+    });
+
+    if (this.statusForm.invalid) {
+      this.notificationService.showError('Error', 'Complete todos los campos requeridos');
+      return;
+    }
     const dialogRef = this.dialog.open(AddDocumentComponent, {
-      width: '700px',
+
+      width: 'fit-content',         // Buen tamaño para 1600x900
+      maxWidth: '40vw',       // Se adapta a pantallas más pequeñas
+      maxHeight: '90vh',      // Evita que ocupe toda la altura
+      panelClass: 'status-dialog',
+
+      autoFocus: false,
+      disableClose: true,
+
       data: {
         parentId: this.documentId,
         mode: 'related',
@@ -217,7 +275,6 @@ export class ChangestatusComponent implements OnChanges {
         this.handleSave();
         this.notificationService.showSuccess('Exito', 'Documento relacionado x2');
         this.closed.emit();
-
       }
     });
   }
@@ -239,7 +296,7 @@ export class ChangestatusComponent implements OnChanges {
     });
   }
 
-
+  // Helper methods for status colors, tooltips and error messages
   getStatusColor(statusId: string): string {
     const colors: { [key: string]: string } = {
       'received': '#a0a0a0',
@@ -267,4 +324,69 @@ export class ChangestatusComponent implements OnChanges {
     };
     return tooltips[statusId] || ' ';
   }
+  getStatusColorClass(statusId: string): string {
+  return 'tooltip-' + statusId;
+}
+
+  errorMessages = {
+    required: 'Este campo es requerido',
+    received_by: {
+      required: 'Debe especificar quien recibió el documento',
+      minlength: 'El nombre debe tener al menos 3 caracteres'
+    },
+    received_date: {
+      required: 'La fecha de recepción es obligatoria'
+    },
+    responsible: {
+      required: 'Debe especificar un responsable para el trámite'
+    },
+    department: {
+      required: 'Debe seleccionar un departamento'
+    },
+    description: {
+      required: 'Debe proporcionar una descripción del trámite'
+    },
+    sent_to: {
+      required: 'Debe especificar a quien se envió el documento para firma'
+    },
+    position: {
+      required: 'Debe especificar el cargo o posición de la persona que firma'
+    },
+    deadline_date: {
+      required: 'Debe establecer una fecha límite para la firma'
+    },
+    signed_by: {
+      required: 'Debe especificar quien concluyó el trámite'
+    },
+    signing_date: {
+      required: 'La fecha de firma es obligatoria'
+    },
+    concluded_by: {
+      required: 'Debe especificar quien concluyó el trámite'
+    },
+    conclusion_date: {
+      required: 'La fecha de conclusión es obligatoria'
+    },
+    archived_by: {
+      required: 'Debe especificar quien archivó el documento'
+    },
+    archived_date: {
+      required: 'La fecha de archivo es obligatoria'
+    },
+    delivered_by: {
+      required: 'Debe especificar quien entregó el documento'
+    },
+    delivery_to: {
+      required: 'Debe especificar a quien se entregó el documento'
+    },
+    delivery_date: {
+      required: 'La fecha de entrega es obligatoria'
+    },
+    cancellation_reason: {
+      required: 'Debe proporcionar un motivo para la cancelación'
+    },
+    cancellation_date: {
+      required: 'La fecha de cancelación es obligatoria'
+    },
+  };
 }

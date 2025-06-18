@@ -70,6 +70,10 @@ export class DataService{
     return this.http.patch(`${this.API_URL}/${id}`, document);
   }
 
+  getDocumentHistory(id: string): Observable<any> {
+    return this.http.get<any>(`${this.API_URL}/${id}/status`);
+  }
+
   deleteDocument(id: string): Observable<any> {
     return this.http.delete(`${this.API_URL}/${id}`);
   }

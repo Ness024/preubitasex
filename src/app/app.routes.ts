@@ -18,6 +18,8 @@ import { AdminEditUserComponent } from './layout/admin-edit-user/admin-edit-user
 import { NoAuthGuard } from './core/guards/noauth.guard';
 import { EditMyUserComponent } from './layout/edit-my-user/edit-my-user.component';
 import { ChangestatusComponent } from './layout/changestatus/changestatus.component';
+import { DocumentStatusHistoriesComponent } from './layout/document-status-histories/document-status-histories.component';
+import { DocumentStatusTimelineComponent } from './layout/document-status-timeline/document-status-timeline.component';
 
 export const routes: Routes = [
     {
@@ -52,17 +54,17 @@ export const routes: Routes = [
             {
                 path: 'agregar',
                 component:AddDocumentComponent,
-                
+
             },
             {
                 path: 'panel',
                 component:ControlPanelComponent,
-                
-            }, 
+
+            },
             {
                 path: 'editar/:id',
                 component:EditDocumentComponent,
-                
+
             },
             {
                 path: 'configuracion',
@@ -93,6 +95,14 @@ export const routes: Routes = [
                 component: EditMyUserComponent,
             },
         ]
+    },
+     {
+        path: 'histories',
+        component: DocumentStatusHistoriesComponent,
+    },
+    {
+        path: 'timeline',
+        component: DocumentStatusTimelineComponent,
     },
     { path: '**', component: NotFoundComponent }
 

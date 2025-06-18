@@ -1,0 +1,354 @@
+<div class="document-history-container">
+  <!-- Encabezado -->
+  <div class="document-header">
+    <h1 class="document-title">
+      <svg width="24" height="24" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M16 6H3V9H16V11L21 7.5L16 4V6Z" fill="#00AEEF" />
+        <path d="M8 18H21V15H8V13L3 16.5L8 20V18Z" fill="#00AEEF" />
+      </svg>
+      Historial del Documento #{{ documentNumber }}
+    </h1>
+    <div class="status-badges">
+      <span class="badge pending">
+        <span class="dot"></span>
+        Pendiente
+      </span>
+      <span class="badge active">
+        <span class="dot"></span>
+        Actual
+      </span>
+      <span class="badge completed">
+        <span class="dot"></span>
+        Completado
+      </span>
+    </div>
+  </div>
+
+  <!-- Línea de tiempo -->
+  <div class="timeline">
+    <!-- Estado: Recepcionado -->
+    <div class="timeline-step completed">
+      <div class="step-header" (click)="toggleStep('received')">
+        <div class="step-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M5 22q-.825 0-1.412-.587T3 20v-4.55l2.75-3.125l1.425 1.425l-2 2.25h13.65l-1.95-2.2l1.425-1.425L21 15.45V20q0 .825-.587 1.413T19 22zm0-2h14v-2H5zm5.625-5.625L7.1 10.85q-.575-.575-.562-1.412t.587-1.413l4.9-4.9q.575-.575 1.425-.6t1.425.55L18.4 6.6q.575.575.6 1.4t-.55 1.4l-5 5q-.575.575-1.412.563t-1.413-.588"/>
+          </svg>
+        </div>
+        <div class="step-info">
+          <h3>Recepcionado</h3>
+          <p>15/05/2023 - 10:30 AM</p>
+        </div>
+        <div class="step-status">
+          <span class="status-badge completed">Completado</span>
+          <i class="fas fa-chevron-down" [class.rotated]="expandedStep === 'received'"></i>
+        </div>
+      </div>
+
+      <div class="step-details" *ngIf="expandedStep === 'received'">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Recibido por:</label>
+            <p>Juan Pérez</p>
+          </div>
+          <div class="detail-item">
+            <label>Fecha de recepción:</label>
+            <p>15/05/2023</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado: En trámite -->
+    <div class="timeline-step completed">
+      <div class="step-header" (click)="toggleStep('in_process')">
+        <div class="step-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M3 5.25A2.25 2.25 0 0 1 5.25 3h9.5A2.25 2.25 0 0 1 17 5.25V14h4v3.75A3.25 3.25 0 0 1 17.75 21H6.25A3.25 3.25 0 0 1 3 17.75zM17 19.5h.75a1.75 1.75 0 0 0 1.75-1.75V15.5H17zM5.25 4.5a.75.75 0 0 0-.75.75v12.5c0 .966.784 1.75 1.75 1.75h9.25V5.25a.75.75 0 0 0-.75-.75zm2 2.5a.75.75 0 0 0 0 1.5h5.5a.75.75 0 0 0 0-1.5zm-.75 4.75a.75.75 0 0 1 .75-.75h5.5a.75.75 0 0 1 0 1.5h-5.5a.75.75 0 0 1-.75-.75m.75 3a.75.75 0 0 0 0 1.5h3a.75.75 0 0 0 0-1.5z"/>
+          </svg>
+        </div>
+        <div class="step-info">
+          <h3>En trámite</h3>
+          <p>16/05/2023 - 09:15 AM</p>
+        </div>
+        <div class="step-status">
+          <span class="status-badge completed">Completado</span>
+          <i class="fas fa-chevron-down" [class.rotated]="expandedStep === 'in_process'"></i>
+        </div>
+      </div>
+
+      <div class="step-details" *ngIf="expandedStep === 'in_process'">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Responsable:</label>
+            <p>María González</p>
+          </div>
+          <div class="detail-item">
+            <label>Departamento:</label>
+            <p>Recursos Humanos</p>
+          </div>
+          <div class="detail-item full-width">
+            <label>Descripción:</label>
+            <p>Revisión de documentación para aprobación de contrato.</p>
+          </div>
+        </div>
+
+        <!-- Documentos relacionados -->
+        <div class="related-documents">
+          <h4>Documentos relacionados</h4>
+          <div class="documents-grid">
+            <div class="document-card">
+              <div class="document-icon blue">
+                <i class="fas fa-file-alt"></i>
+              </div>
+              <div class="document-info">
+                <h5>Oficio RH-2023-0125</h5>
+                <p>Solicitud de revisión</p>
+              </div>
+              <a href="#" class="document-action">
+                <i class="fas fa-external-link-alt"></i>
+              </a>
+            </div>
+
+            <div class="document-card">
+              <div class="document-icon green">
+                <i class="fas fa-file-pdf"></i>
+              </div>
+              <div class="document-info">
+                <h5>Contrato Preliminar</h5>
+                <p>PDF - 2.3 MB</p>
+              </div>
+              <a href="#" class="document-action">
+                <i class="fas fa-download"></i>
+              </a>
+            </div>
+
+            <div class="document-card">
+              <div class="document-icon purple">
+                <i class="fas fa-file-word"></i>
+              </div>
+              <div class="document-info">
+                <h5>Anexo Técnico</h5>
+                <p>DOCX - 1.5 MB</p>
+              </div>
+              <a href="#" class="document-action">
+                <i class="fas fa-download"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado: En firma -->
+    <div class="timeline-step active">
+      <div class="step-header" (click)="toggleStep('in_signing')">
+        <div class="step-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="m7.63 7.63l3.006 3.006M3.042 4.34l2.616 9.157c.778 2.723 2.933 4.6 5.764 4.6a5.6 5.6 0 0 0 1.264-.148c.392-.09.812-.001 1.097.283l2.46 2.46c.41.41 1.075.41 1.485 0l2.964-2.965a1.05 1.05 0 0 0 0-1.486l-2.455-2.455c-.284-.284-.373-.703-.284-1.094q.143-.624.145-1.27c0-2.832-1.877-4.987-4.6-5.765L4.341 3.042a1.05 1.05 0 0 0-1.3 1.299"/>
+          </svg>
+        </div>
+        <div class="step-info">
+          <h3>En firma</h3>
+          <p>18/05/2023 - 14:45 PM</p>
+        </div>
+        <div class="step-status">
+          <span class="status-badge active">En proceso</span>
+          <i class="fas fa-chevron-down" [class.rotated]="expandedStep === 'in_signing'"></i>
+        </div>
+      </div>
+
+      <div class="step-details" *ngIf="expandedStep === 'in_signing'">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Enviado a:</label>
+            <p>Carlos Rodríguez</p>
+          </div>
+          <div class="detail-item">
+            <label>Cargo:</label>
+            <p>Director General</p>
+          </div>
+          <div class="detail-item">
+            <label>Fecha límite:</label>
+            <p>25/05/2023</p>
+          </div>
+          <div class="detail-item">
+            <label>Estado actual:</label>
+            <div class="status-indicator">
+              <span class="dot yellow"></span>
+              <p>Pendiente de firma</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Documento para firma -->
+        <div class="related-documents">
+          <h4>Documento para firma</h4>
+          <div class="documents-grid single">
+            <div class="document-card">
+              <div class="document-icon primary">
+                <i class="fas fa-file-signature"></i>
+              </div>
+              <div class="document-info">
+                <h5>Contrato Final DOC-2023-0568</h5>
+                <p>PDF - 3.1 MB</p>
+              </div>
+              <a href="#" class="document-action">
+                <i class="fas fa-eye"></i>
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado: Firmado -->
+    <div class="timeline-step">
+      <div class="step-header" (click)="toggleStep('in_signed')">
+        <div class="step-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2">
+              <path d="m9 10l3.258 2.444a1 1 0 0 0 1.353-.142L20 5"/>
+              <path d="M21 12a9 9 0 1 1-6.67-8.693"/>
+            </g>
+          </svg>
+        </div>
+        <div class="step-info">
+          <h3>Firmado</h3>
+          <p>Pendiente</p>
+        </div>
+        <div class="step-status">
+          <span class="status-badge pending">Pendiente</span>
+          <i class="fas fa-chevron-down" [class.rotated]="expandedStep === 'in_signed'"></i>
+        </div>
+      </div>
+
+      <div class="step-details" *ngIf="expandedStep === 'in_signed'">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Firmado por:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item">
+            <label>Fecha de firma:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item full-width">
+            <label>Notas de conclusión:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado: Concluido -->
+    <div class="timeline-step">
+      <div class="step-header" (click)="toggleStep('completed')">
+        <div class="step-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor" d="m10.6 16.6l7.05-7.05l-1.4-1.4l-5.65 5.65l-2.85-2.85l-1.4 1.4zM12 22q-2.075 0-3.9-.788t-3.175-2.137q-1.35-1.35-2.137-3.175T2 12q0-2.075.788-3.9t2.137-3.175q1.35-1.35 3.175-2.137T12 2q2.075 0 3.9.788t3.175 2.137q1.35 1.35 2.138 3.175T22 12q0 2.075-.788 3.9t-2.137 3.175q-1.35 1.35-3.175 2.138T12 22"/>
+          </svg>
+        </div>
+        <div class="step-info">
+          <h3>Concluido</h3>
+          <p>Pendiente</p>
+        </div>
+        <div class="step-status">
+          <span class="status-badge pending">Pendiente</span>
+          <i class="fas fa-chevron-down" [class.rotated]="expandedStep === 'completed'"></i>
+        </div>
+      </div>
+
+      <div class="step-details" *ngIf="expandedStep === 'completed'">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Concluido por:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item">
+            <label>Fecha de conclusión:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item full-width">
+            <label>Notas de conclusión:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado: Entregado -->
+    <div class="timeline-step">
+      <div class="step-header" (click)="toggleStep('delivered')">
+        <div class="step-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <path fill="currentColor" d="M19 7h-3V6a4 4 0 0 0-8 0v1H5a1 1 0 0 0-1 1v11a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V8a1 1 0 0 0-1-1M8 6a2 2 0 0 1 4 0v1H8zm8 14H6a1 1 0 0 1-1-1V9h14v10a1 1 0 0 1-1 1m-3-4a1 1 0 0 1-1 1h-4a1 1 0 0 1 0-2h4a1 1 0 0 1 1 1"/>
+          </svg>
+        </div>
+        <div class="step-info">
+          <h3>Entregado</h3>
+          <p>Pendiente</p>
+        </div>
+        <div class="step-status">
+          <span class="status-badge pending">Pendiente</span>
+          <i class="fas fa-chevron-down" [class.rotated]="expandedStep === 'delivered'"></i>
+        </div>
+      </div>
+
+      <div class="step-details" *ngIf="expandedStep === 'delivered'">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Entregado por:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item">
+            <label>Entregado a:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item">
+            <label>Fecha de entrega:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item">
+            <label>Detalles de entrega:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estado: Archivado -->
+    <div class="timeline-step">
+      <div class="step-header" (click)="toggleStep('archived')">
+        <div class="step-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+            <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" color="currentColor">
+              <path d="M21 7v5M3 7v10.161c0 1.383 1.946 2.205 5.837 3.848C10.4 21.67 11.182 22 12 22V11.355M15 19s.875 0 1.75 2c0 0 2.78-5 5.25-6"/>
+              <path d="M8.326 9.691L5.405 8.278C3.802 7.502 3 7.114 3 6.5s.802-1.002 2.405-1.778l2.92-1.413C10.13 2.436 11.03 2 12 2s1.871.436 3.674 1.309l2.921 1.413C20.198 5.498 21 5.886 21 6.5s-.802 1.002-2.405 1.778l-2.92 1.413C13.87 10.564 12.97 11 12 11s-1.871-.436-3.674-1.309M6 12l2 1m9-9L7 9"/>
+            </g>
+          </svg>
+        </div>
+        <div class="step-info">
+          <h3>Archivado</h3>
+          <p>Pendiente</p>
+        </div>
+        <div class="step-status">
+          <span class="status-badge pending">Pendiente</span>
+          <i class="fas fa-chevron-down" [class.rotated]="expandedStep === 'archived'"></i>
+        </div>
+      </div>
+
+      <div class="step-details" *ngIf="expandedStep === 'archived'">
+        <div class="detail-grid">
+          <div class="detail-item">
+            <label>Archivado por:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+          <div class="detail-item">
+            <label>Fecha de archivo:</label>
+            <p class="empty">Pendiente</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

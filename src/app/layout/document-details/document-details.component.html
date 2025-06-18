@@ -224,7 +224,7 @@
 
     </section>
     @if (changestatusopen) {
-    <div class="modal-overlays">
+    <div class="modal-overlays" >
       <div class="modal-contents">
         <app-changestatus [documentId]="document.id" [sendStatusId]="document.status_id" (closed)="cerrarModal()">
         </app-changestatus>

@@ -1,0 +1,205 @@
+<div class="max-w-5xl mx-auto p-4 md:p-8">
+  <div class="bg-white rounded-xl shadow-sm overflow-hidden mb-8">
+    <div class="p-6 bg-gradient-to-r from-primary-600 to-primary-700 text-white">
+      <h1 class="text-2xl font-bold">Historial de Documento</h1>
+      <p class="text-primary-100">Oficio: {{ documentTitle }}</p>
+    </div>
+
+    <div class="p-6">
+      <div class="flex flex-wrap gap-4 mb-8">
+        <div class="badge bg-gray-100 text-gray-600">
+          <span class="w-2 h-2 rounded-full bg-gray-400 mr-2"></span>
+          Pendiente
+        </div>
+        <div class="badge bg-primary-100 text-primary-700">
+          <span class="w-2 h-2 rounded-full bg-primary-500 mr-2"></span>
+          Actual
+        </div>
+        <div class="badge bg-green-100 text-green-700">
+          <span class="w-2 h-2 rounded-full bg-green-500 mr-2"></span>
+          Completado
+        </div>
+      </div>
+
+      <div class="timeline-container relative">
+        <ng-container *ngFor="let statusId of statusOrder">
+          <ng-container *ngIf="getStatusData(statusId) as statusData">
+            <div class="timeline-item {{ getStatusClass(statusId) }} {{ isExpanded(statusId) ? 'expanded' : '' }}"
+                 id="step-{{ statusId }}">
+              <div class="timeline-dot flex items-center justify-center">
+                <i [class]="getStatusIcon(statusId)" class="text-white text-xs"></i>
+              </div>
+              <div class="timeline-content">
+                <div class="p-4 cursor-pointer" (click)="toggleStep(statusId)">
+                  <div class="flex items-center justify-between">
+                    <div>
+                      <h3 class="text-lg font-semibold text-gray-900">{{ getStatusTitle(statusId) }}</h3>
+                      <p class="text-sm text-gray-500">{{ formatDate(statusData.created_at) }}</p>
+                    </div>
+                    <div class="flex items-center">
+                      <span class="badge {{ getStatusBadge(statusId).class }} mr-3">
+                        {{ getStatusBadge(statusId).text }}
+                      </span>
+                      <i class="fas fa-chevron-down text-gray-400 transition-transform"
+                         [class.rotate-180]="isExpanded(statusId)"></i>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="timeline-details border-t border-gray-100" *ngIf="isExpanded(statusId)">
+                  <div class="p-4 bg-gray-50 rounded-b-lg">
+                    <ng-container [ngSwitch]="statusId">
+                      <!-- Received Status -->
+                      <div *ngSwitchCase="StatusType.Received">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Recibido por</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.received_by }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Fecha de recepción</p>
+                            <p class="text-sm text-gray-800">{{ getShortDate(statusData.form.received_date) }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- In Process Status -->
+                      <div *ngSwitchCase="StatusType.InProcess">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Responsable</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.responsible }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Departamento</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.department }}</p>
+                          </div>
+                          <div class="md:col-span-2">
+                            <p class="text-sm font-medium text-gray-500">Descripción</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.description }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- In Signing Status -->
+                      <div *ngSwitchCase="StatusType.InSigning">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Enviado a</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.sent_to }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Cargo</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.position }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Fecha límite</p>
+                            <p class="text-sm text-gray-800">{{ getShortDate(statusData.form.deadline_date) }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Signed Status -->
+                      <div *ngSwitchCase="StatusType.Signed">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Firmado por</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.concluded_by }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Fecha de firma</p>
+                            <p class="text-sm text-gray-800">{{ getShortDate(statusData.form.signing_date) }}</p>
+                          </div>
+                          <div class="md:col-span-2">
+                            <p class="text-sm font-medium text-gray-500">Notas de conclusión</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.conclusion_notes }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Completed Status -->
+                      <div *ngSwitchCase="StatusType.Completed">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Concluido por</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.concluded_by }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Fecha de conclusión</p>
+                            <p class="text-sm text-gray-800">{{ getShortDate(statusData.form.conclusion_date) }}</p>
+                          </div>
+                          <div class="md:col-span-2">
+                            <p class="text-sm font-medium text-gray-500">Notas de conclusión</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.conclusion_notes }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Delivered Status -->
+                      <div *ngSwitchCase="StatusType.Delivered">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Entregado por</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.delivered_by }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Entregado a</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.delivery_to }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Fecha de entrega</p>
+                            <p class="text-sm text-gray-800">{{ getShortDate(statusData.form.delivery_date) }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Detalles de entrega</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.delivery_notes }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Archived Status -->
+                      <div *ngSwitchCase="StatusType.Archived">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Archivado por</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.archived_by }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Fecha de archivo</p>
+                            <p class="text-sm text-gray-800">{{ getShortDate(statusData.form.archived_date) }}</p>
+                          </div>
+                          <div class="md:col-span-2">
+                            <p class="text-sm font-medium text-gray-500">Ubicación</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.archived_file_location }}</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      <!-- Cancelled Status -->
+                      <div *ngSwitchCase="StatusType.Cancelled">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Fecha de cancelación</p>
+                            <p class="text-sm text-gray-800">{{ getShortDate(statusData.form.cancellation_date) }}</p>
+                          </div>
+                          <div>
+                            <p class="text-sm font-medium text-gray-500">Razón</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.cancellation_reason }}</p>
+                          </div>
+                          <div class="md:col-span-2">
+                            <p class="text-sm font-medium text-gray-500">Notas</p>
+                            <p class="text-sm text-gray-800">{{ statusData.form.cancellation_notes }}</p>
+                          </div>
+                        </div>
+                      </div>
+                    </ng-container>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </ng-container>
+        </ng-container>
+      </div>
+    </div>
+  </div>
+</div>

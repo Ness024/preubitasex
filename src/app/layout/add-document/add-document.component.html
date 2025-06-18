@@ -99,7 +99,7 @@
       <fieldset class="form-group type">
         <label for="sender_department_id">
           @if(typeText) {
-            Nuevo departamento 
+            Nuevo departamento
           }
           @if(!typeText) {
             Departamento Remitente
@@ -520,6 +520,10 @@
       <fieldset class="form-group submit">
         <button type="submit">Guardar Documento</button>
       </fieldset>
+      @if (dialogRef) {
+        <fieldset class="form-group submit">
+        <button type="button" (click)="onCancel()">Cancelar</button>
+      </fieldset>}
     </form>
   </div>
 </section>

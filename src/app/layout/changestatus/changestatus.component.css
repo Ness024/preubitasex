@@ -24,6 +24,7 @@
   flex-wrap: wrap;
   justify-content: baseline;
   width: 100%;
+  padding-bottom: 0;
   margin-bottom: 0px;
 }
 
@@ -95,9 +96,6 @@ h5 {
 
 .checkbox-wrapper-16 {
   position: relative;
-  margin-top: 8px;
-  /*margin-bottom: 5px;*/
-
 }
 
 .checkbox-wrapper:hover .satus-tooltip {
@@ -511,3 +509,20 @@ fieldset {
     transform: scale(1);
   }
 }
+
+
+
+/* Ajustes específicos para relación de aspecto 16:9*/
+@media screen and (max-width: 1600px) and (max-height: 900px) {
+  .contenedor {
+    width: 80vw;
+    max-width: 900px;
+    height: auto;
+  }
+
+}
+
+@media screen and (max-width: 1300px) {
+
+}
+

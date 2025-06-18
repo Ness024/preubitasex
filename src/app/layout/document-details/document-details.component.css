@@ -740,3 +740,10 @@ input[type="file"]{
   box-shadow: 0 1px 4px rgba(0,0,0,0.10);
   background: #eaf1fb;
 }
+
+
+@media (max-width: 1440px) {
+  .modal-contents {
+    margin-left: 80px;
+  }
+}
