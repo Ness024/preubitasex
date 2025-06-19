@@ -18,7 +18,6 @@ import { AdminEditUserComponent } from './layout/admin-edit-user/admin-edit-user
 import { NoAuthGuard } from './core/guards/noauth.guard';
 import { EditMyUserComponent } from './layout/edit-my-user/edit-my-user.component';
 import { ChangestatusComponent } from './layout/changestatus/changestatus.component';
-import { DocumentStatusHistoriesComponent } from './layout/document-status-histories/document-status-histories.component';
 import { DocumentStatusTimelineComponent } from './layout/document-status-timeline/document-status-timeline.component';
 
 export const routes: Routes = [
@@ -96,13 +95,10 @@ export const routes: Routes = [
             },
         ]
     },
-     {
-        path: 'histories',
-        component: DocumentStatusHistoriesComponent,
-    },
     {
         path: 'timeline',
         component: DocumentStatusTimelineComponent,
+
     },
     { path: '**', component: NotFoundComponent }
 

@@ -1,11 +1,14 @@
 export interface Category {
   id: number;
-  name: string; //este 2 
+  name: string; //este 2
 }
 
 export interface Status {
   id: string;
-  name: string; //este es el estatus
+  name: string;
+  key: string;
+  created_at?: string;
+  updated_at?: string | null;
 }
 
 export interface Department {

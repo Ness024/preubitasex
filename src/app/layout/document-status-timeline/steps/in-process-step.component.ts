@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DocumentStep } from '../../../models/document-step.model';
+import { DocumentStep } from '../../../models/document-history.model';
 
 @Component({
   selector: 'app-in-process-step',
