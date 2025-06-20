@@ -3,6 +3,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../service/data.service';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
+
 
 import { DocumentForm, FormReceived, FormInProcess, FormInSigning, FormSigned, FormDelivered, FormCompleted, FormCancelled, FormArchived } from '../../models/forms.model';
 import { DocumentHistoryResponse, DocumentHistoryItem } from '../../models/document-history.model';
@@ -21,29 +23,43 @@ export class DocumentStatusTimelineComponent implements OnInit {
   relatedDocuments: Document[] = [];
   isLoading = true;
   error: string | null = null;
-  statusKeys = STATUS_KEYS; // Exponer constantes para el template
-  currentDocumentId = '03496a00-be65-4f49-99de-af2b550132fe'; // ID del documento actual
+  statusKeys = STATUS_KEYS;
+  currentDocumentId: string = '';
+  message: string | null = null;
 
-  constructor(private dataService: DataService) { }
+  constructor(
+    private dataService: DataService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) {
+  }
 
   ngOnInit(): void {
+    this.currentDocumentId = this.route.snapshot.paramMap.get('id') || '';
+    if (!this.currentDocumentId) {
+      this.router.navigate(['/main']);
+    }
     this.loadDocumentHistory(this.currentDocumentId);
   }
 
   loadDocumentHistory(documentId: string): void {
     this.isLoading = true;
     this.error = null;
+    this.message = null;
 
     this.dataService.getDocumentHistory(documentId).subscribe({
       next: (response: DocumentHistoryResponse) => {
-        this.historyData = this.sortHistoryByDate(response.data);
+        if (!response.data || response.data.length === 0) {
+          this.message = response.message || 'No se encontraron registros de historial para este documento.';
+        } else {
+          this.historyData = this.sortHistoryByDate(response.data);
+          this.message = null;
+        }
         this.relatedDocuments = response.related_documents || [];
         this.isLoading = false;
-        console.log('Document history loaded successfully', this.historyData);
       },
-      error: (err) => {
-        console.error('Error loading history', err);
-        this.error = 'Failed to load document history';
+      error: (error) => {
+        this.error = error.error.message || 'Error al cargar el historial del documento.';
         this.isLoading = false;
       }
     });
@@ -55,12 +71,10 @@ export class DocumentStatusTimelineComponent implements OnInit {
     );
   }
 
-  // Helper para type-safe access al form
   getFormData<T>(item: DocumentHistoryItem): T {
     return item.form as T;
   }
 
-  // Verificar tipo de estado
   isStatus(item: DocumentHistoryItem, statusKey: keyof typeof STATUS_KEYS): boolean {
     return item.status.key === STATUS_KEYS[statusKey];
   }
@@ -69,9 +83,6 @@ export class DocumentStatusTimelineComponent implements OnInit {
     return item.form as T;
   }
 
-
-
-  // Métodos específicos por tipo de estado
   getReceivedDetails(item: DocumentHistoryItem): FormReceived {
     return this.getForm<FormReceived>(item);
   }
@@ -97,8 +108,6 @@ export class DocumentStatusTimelineComponent implements OnInit {
     return this.getForm<FormArchived>(item);
   }
 
-
-  // Type guards para uso en template
   isReceivedForm(item: DocumentHistoryItem): item is DocumentHistoryItem & { form: FormReceived } {
     return item.status.key === STATUS_KEYS.RECEIVED;
   }

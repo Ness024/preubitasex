@@ -1,119 +1,139 @@
-@for (item of historyData; track item.id) {
-  <div class="timeline-item">
-    @switch (item.status.key) {
+<section class="historialcontainer">
+  @if (isLoading) {
+  <div class="loading">
+    <p>Cargando historial...</p>
+  </div>
+  } @else if (historyData.length === 0) {
+  <div class="no-data">
+    <p>{{ message || 'No se encontraron Resultados' }}</p>
+  </div>
+  } @else if (error) {
+  <div class="error">
+    <p> {{ error }}</p>
+  </div>
+  } @else {
+  <div class="timeline-container">
+    @for (item of historyData; track item.id) {
+    <div class="timeline-item">
+      @switch (item.status.key) {
       @case (statusKeys.RECEIVED) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Recibido por: {{ getReceivedDetails(item).received_by }}</p>
-          <p>Fecha: {{ getReceivedDetails(item).received_date | date:'mediumDate' }}</p>
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+
+      <div class="timeline-item-content" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Recibido por: {{ getReceivedDetails(item).received_by }}</p>
+        <p>Fecha: {{ getReceivedDetails(item).received_date | date:'mediumDate' }}</p>
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        
+        }
+      </div>
       }
 
       @case (statusKeys.IN_PROCESS) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Departamento: {{ getProcessDetails(item).department }}</p>
-          <p>Responsable: {{ getProcessDetails(item).responsible }}</p>
-          <p>Descripción: {{ getProcessDetails(item).description }}</p>
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="timeline-item" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Departamento: {{ getProcessDetails(item).department }}</p>
+        <p>Responsable: {{ getProcessDetails(item).responsible }}</p>
+        <p>Descripción: {{ getProcessDetails(item).description }}</p>
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
 
       @case (statusKeys.IN_SIGNING) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Enviado a: {{ getSigningDetails(item).sent_to }}</p>
-          <p>Cargo: {{ getSigningDetails(item).position }}</p>
-          <p>Fecha límite: {{ getSigningDetails(item).deadline_date | date:'mediumDate' }}</p>
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="timeline-item" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Enviado a: {{ getSigningDetails(item).sent_to }}</p>
+        <p>Cargo: {{ getSigningDetails(item).position }}</p>
+        <p>Fecha límite: {{ getSigningDetails(item).deadline_date | date:'mediumDate' }}</p>
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
 
       @case (statusKeys.IN_SIGNED) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Firmado por: {{ getSignedDetails(item).concluded_by }}</p>
-          <p>Fecha firma: {{ getSignedDetails(item).signing_date | date:'mediumDate' }}</p>
-          <p>Observaciones: {{ getSignedDetails(item).conclusion_notes }}</p>
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="timeline-item" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Firmado por: {{ getSignedDetails(item).concluded_by }}</p>
+        <p>Fecha firma: {{ getSignedDetails(item).signing_date | date:'mediumDate' }}</p>
+        <p>Observaciones: {{ getSignedDetails(item).conclusion_notes }}</p>
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
 
       @case (statusKeys.COMPLETED) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Concluido por: {{ getCompletedDetails(item).concluded_by }}</p>
-          <p>Fecha conclusión: {{ getCompletedDetails(item).conclusion_date | date:'mediumDate' }}</p>
-          <p>Notas: {{ getCompletedDetails(item).conclusion_notes }}</p>
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="timeline-item" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Concluido por: {{ getCompletedDetails(item).concluded_by }}</p>
+        <p>Fecha conclusión: {{ getCompletedDetails(item).conclusion_date | date:'mediumDate' }}</p>
+        <p>Notas: {{ getCompletedDetails(item).conclusion_notes }}</p>
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
 
       @case (statusKeys.DELIVERED) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Entregado a: {{ getDeliveredDetails(item).delivery_to }}</p>
-          <p>Entregado por: {{ getDeliveredDetails(item).delivered_by }}</p>
-          <p>Fecha entrega: {{ getDeliveredDetails(item).delivery_date | date:'mediumDate' }}</p>
-          @if (getDeliveredDetails(item).delivery_notes) {
-            <p>Notas: {{ getDeliveredDetails(item).delivery_notes }}</p>
-          }
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="timeline-item" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Entregado a: {{ getDeliveredDetails(item).delivery_to }}</p>
+        <p>Entregado por: {{ getDeliveredDetails(item).delivered_by }}</p>
+        <p>Fecha entrega: {{ getDeliveredDetails(item).delivery_date | date:'mediumDate' }}</p>
+        @if (getDeliveredDetails(item).delivery_notes) {
+        <p>Notas: {{ getDeliveredDetails(item).delivery_notes }}</p>
+        }
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
 
       @case (statusKeys.ARCHIVED) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Archivado por: {{ getArchivedDetails(item).archived_by }}</p>
-          <p>Fecha archivo: {{ getArchivedDetails(item).archived_date | date:'mediumDate' }}</p>
-          <p>Ubicación: {{ getArchivedDetails(item).archived_file_location }}</p>
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="timeline-item" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Archivado por: {{ getArchivedDetails(item).archived_by }}</p>
+        <p>Fecha archivo: {{ getArchivedDetails(item).archived_date | date:'mediumDate' }}</p>
+        <p>Ubicación: {{ getArchivedDetails(item).archived_file_location }}</p>
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
 
       @case (statusKeys.CANCELLED) {
-        <div class="timeline-item" [attr.data-status]="item.status.key">
-          <h3>{{ item.status.name }}</h3>
-          <p>Fecha cancelación: {{ getCancelledDetails(item).cancellation_date | date:'mediumDate' }}</p>
-          <p>Motivo: {{ getCancelledDetails(item).cancellation_reason }}</p>
-          @if (getCancelledDetails(item).cancellation_notes) {
-            <p>Notas: {{ getCancelledDetails(item).cancellation_notes }}</p>
-          }
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="timeline-item" [attr.data-status]="item.status.key">
+        <h3>{{ item.status.name }}</h3>
+        <p>Fecha cancelación: {{ getCancelledDetails(item).cancellation_date | date:'mediumDate' }}</p>
+        <p>Motivo: {{ getCancelledDetails(item).cancellation_reason }}</p>
+        @if (getCancelledDetails(item).cancellation_notes) {
+        <p>Notas: {{ getCancelledDetails(item).cancellation_notes }}</p>
+        }
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
 
       @default {
-        <div class="unknown-status">
-          <h3>Estado desconocido</h3>
-          <p>ID: {{ item.status_id }}</p>
-          <p>Key: {{ item.status.key }}</p>
-          @if (item.comment) {
-            <p class="comment">Comentario: {{ item.comment }}</p>
-          }
-        </div>
+      <div class="unknown-status">
+        <h3>Estado desconocido</h3>
+        <p>ID: {{ item.status_id }}</p>
+        <p>Key: {{ item.status.key }}</p>
+        @if (item.comment) {
+        <p class="comment">Comentario: {{ item.comment }}</p>
+        }
+      </div>
       }
-    }
-    <div class="timeline-date">
-      {{ item.created_at | date:'medium' }}
+      }
+      <div class="timeline-date">
+        {{ item.created_at | date:'medium' }}
+      </div>
     </div>
+    }
   </div>
-}
+  }
+</section>

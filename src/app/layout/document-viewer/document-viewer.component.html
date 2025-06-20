@@ -1,0 +1,15 @@
+<div class="document-viewer-container">
+  <div class="header">
+    <h2>Detalles de Documento</h2>
+  </div>
+
+  <mat-tab-group class="document-tabs" animationDuration="200ms">
+    <mat-tab label="Información General" class="tab-content">
+      <app-document-details />
+    </mat-tab>
+
+    <mat-tab label="Historial de Estados" class="tab-content">
+      <app-document-status-timeline />
+    </mat-tab>
+  </mat-tab-group>
+</div>
