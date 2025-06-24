@@ -1,15 +1,16 @@
 // document-status-timeline.component.ts
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectionStrategy, Component, OnDestroy, OnInit, Output, EventEmitter, Input, SimpleChanges, OnChanges } from '@angular/core';
 import { CommonModule, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { DataService } from '../../service/data.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
-
+import { Document } from '../../models/document';
 
 import { DocumentForm, FormReceived, FormInProcess, FormInSigning, FormSigned, FormDelivered, FormCompleted, FormCancelled, FormArchived } from '../../models/forms.model';
 import { DocumentHistoryResponse, DocumentHistoryItem } from '../../models/document-history.model';
 import { STATUS_KEYS } from '../../shared/constants/status.constants';
-import { Status } from '../../models/document';
+import { EventsService } from '../../service/events.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-document-status-timeline',
@@ -18,7 +19,10 @@ import { Status } from '../../models/document';
   templateUrl: './document-status-timeline.component.html',
   styleUrls: ['./document-status-timeline.component.css']
 })
-export class DocumentStatusTimelineComponent implements OnInit {
+export class DocumentStatusTimelineComponent implements OnInit, OnDestroy, OnChanges {
+  @Output() viewRelatedDocument = new EventEmitter<string>();
+  @Input() documentId?: string;
+  private subscription: Subscription = new Subscription();
   historyData: DocumentHistoryItem[] = [];
   relatedDocuments: Document[] = [];
   isLoading = true;
@@ -26,20 +30,34 @@ export class DocumentStatusTimelineComponent implements OnInit {
   statusKeys = STATUS_KEYS;
   currentDocumentId: string = '';
   message: string | null = null;
+  expandedSteps: Set<string> = new Set();
 
   constructor(
+    private eventsService: EventsService,
     private dataService: DataService,
-    private route: ActivatedRoute,
-    private router: Router
+
   ) {
   }
 
-  ngOnInit(): void {
-    this.currentDocumentId = this.route.snapshot.paramMap.get('id') || '';
-    if (!this.currentDocumentId) {
-      this.router.navigate(['/main']);
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['documentId'] && this.documentId) {
+      this.loadDocumentHistory(this.documentId);
     }
-    this.loadDocumentHistory(this.currentDocumentId);
+  }
+
+  ngOnInit(): void {
+    if (this.documentId) {
+    this.loadDocumentHistory(this.documentId);
+    }
+    this.subscription = this.eventsService.statusChanged$.subscribe(() => {
+      if (this.documentId) {
+      this.loadDocumentHistory(this.documentId);
+      }
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
   loadDocumentHistory(documentId: string): void {
@@ -50,6 +68,7 @@ export class DocumentStatusTimelineComponent implements OnInit {
     this.dataService.getDocumentHistory(documentId).subscribe({
       next: (response: DocumentHistoryResponse) => {
         if (!response.data || response.data.length === 0) {
+          this.historyData = [];
           this.message = response.message || 'No se encontraron registros de historial para este documento.';
         } else {
           this.historyData = this.sortHistoryByDate(response.data);
@@ -57,6 +76,10 @@ export class DocumentStatusTimelineComponent implements OnInit {
         }
         this.relatedDocuments = response.related_documents || [];
         this.isLoading = false;
+        const currentStep = this.historyData.find(item => (item as any).localStatus === 'current');
+        if (currentStep && (currentStep as any).uniqueId) {
+          this.expandedSteps.add((currentStep as any).uniqueId);
+        }
       },
       error: (error) => {
         this.error = error.error.message || 'Error al cargar el historial del documento.';
@@ -66,9 +89,14 @@ export class DocumentStatusTimelineComponent implements OnInit {
   }
 
   private sortHistoryByDate(history: DocumentHistoryItem[]): DocumentHistoryItem[] {
-    return [...history].sort((a, b) =>
+    const sorted = [...history].sort((a, b) =>
       new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
     );
+    return sorted.map((item, index) => ({
+      ...item,
+      localStatus: index === 0 ? 'current' : 'completed',
+      uniqueId: `${item.status.key}-${item.id}-${index}`
+    }));
   }
 
   getFormData<T>(item: DocumentHistoryItem): T {
@@ -132,5 +160,36 @@ export class DocumentStatusTimelineComponent implements OnInit {
   isArchivedForm(item: DocumentHistoryItem): item is DocumentHistoryItem & { form: FormArchived } {
     return item.status.key === STATUS_KEYS.ARCHIVED;
   }
+
+  onRelatedDocumentClick(documentId:string) {
+    this.viewRelatedDocument.emit(documentId);
+  }
+
+  toggleDetails(uniqueId: string): void {
+    if (this.expandedSteps.has(uniqueId)) {
+      this.expandedSteps.delete(uniqueId);
+    } else {
+      this.expandedSteps.add(uniqueId);
+    }
+  }
+
+  isStepExpanded(uniqueId: string): boolean {
+    return this.expandedSteps.has(uniqueId);
+  }
+
+  getStatusColor(statusId: string): string {
+    const colors: { [key: string]: string } = {
+      'received': '#a0a0a0',
+      'in_process': 'var(--color-theme-orange)',
+      'in_signing': 'purple',
+      'in_signed': 'var(--color-theme-green)',
+      'completed': 'var(--color-theme-light-blue)',
+      'delivered': 'var(--color-theme-blue)',
+      'archived': 'var(--color-theme-dark-blue)',
+      'cancelled': 'var(--color-theme-red)'
+    };
+    return colors[statusId] || '#a0a0a0';
+  }
+
 }
 

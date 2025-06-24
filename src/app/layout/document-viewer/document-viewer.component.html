@@ -3,13 +3,15 @@
     <h2>Detalles de Documento</h2>
   </div>
 
-  <mat-tab-group class="document-tabs" animationDuration="200ms">
+  <mat-tab-group #tabGroup class="document-tabs" animationDuration="200ms">
     <mat-tab label="Información General" class="tab-content">
-      <app-document-details />
+      <app-document-details [documentId]="currentDocumentId" />
     </mat-tab>
 
-    <mat-tab label="Historial de Estados" class="tab-content">
-      <app-document-status-timeline />
+    <mat-tab label="Historial de Cambios" class="tab-content">
+      <app-document-status-timeline
+      [documentId]="currentDocumentId"
+      (viewRelatedDocument)="showDocumentDetails($event)"/>
     </mat-tab>
   </mat-tab-group>
 </div>

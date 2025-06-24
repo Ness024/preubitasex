@@ -141,12 +141,7 @@
       <fieldset class="form-group description">
         <label for="description">Descripción del trámite</label>
         <textarea class="input-form" id="description" name="description" rows="4" formControlName="description"
-          placeholder="Describa brevemente el trámite a realizar" [class.is-invalid]="getFormControl('description')?.invalid &&
-                            (getFormControl('description')?.touched || formSubmitted)"></textarea>
-
-        <app-form-input-error [control]="getFormControl('description')!" [errorMessages]="errorMessages.description"
-          [showOnSubmit]="formSubmitted">
-        </app-form-input-error>
+          placeholder="Describa brevemente el trámite a realizar"></textarea>
       </fieldset>
       <div class="aviso">
         <div class="svgcontainer">

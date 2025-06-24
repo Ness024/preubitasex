@@ -158,9 +158,12 @@ export class AddDocumentComponent {
       this.dataService.storeDocument(formData).subscribe({
         next: (response) => {
           if (this.data.mode === 'related') {
-            this.notificationService.showSuccess('Exito','Documento relacionado creado exitosamente');
+            this.notificationService.showSuccess('Exito','Documento relacionado creado');
             if (this.dialogRef) {
-            this.dialogRef.close('success');
+            this.dialogRef.close({
+              result:'success',
+              newDocumentId: response.document.id,
+            });
             }
           } else {
             this.router.navigate(['/main']);

@@ -1,5 +1,5 @@
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
-import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, Input, SimpleChanges } from '@angular/core';
 import { DataService } from '../../service/data.service';
 import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { ApiResponse, Document } from '../../models/document';
@@ -64,6 +64,7 @@ export interface FileData {
 })
 
 export class DocumentDetailsComponent {
+  @Input() documentId?: string;
   commentForm = new FormGroup({
     comment: new FormControl('', { nonNullable: true })
   });
@@ -102,6 +103,13 @@ export class DocumentDetailsComponent {
     this.loadPermissions();
     this.idDoc = this.route.snapshot.paramMap.get('id')!; // Obtiene el id del documento
     if (this.idDoc) {
+      this.loadDocument();
+    }
+  }
+
+  ngOnChanges(changes:SimpleChanges) {
+    if (changes['documentId'] && this.documentId) {
+      this.idDoc = this.documentId;
       this.loadDocument();
     }
   }

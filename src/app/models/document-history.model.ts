@@ -2,6 +2,7 @@
 import { DocumentForm } from './forms.model';
 import { Status } from "./document";
 import { StatusKey } from '../shared/constants/status.constants';
+import { Document } from './document';
 
 export interface DocumentHistoryItem {
   id: number;
@@ -12,8 +13,12 @@ export interface DocumentHistoryItem {
   created_at: string;
   updated_at: string;
   status: Status;
+  localStatus?: 'current' | 'completed';
+  uniqueId: string;
 
   isStatus?: (key: StatusKey) => boolean;
+
+  related_document?: Document;
 }
 
 export interface DocumentHistoryResponse {

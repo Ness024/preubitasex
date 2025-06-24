@@ -1,4 +1,3 @@
-
 import { Component, Input, OnChanges, SimpleChanges, EventEmitter, Output } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormBuilder, AbstractControl } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -15,6 +14,7 @@ import { DataService } from '../../service/data.service';
 import { AddDocumentComponent } from '../add-document/add-document.component';
 import { FormInputErrorComponent } from '../../shared/form-input-error/form-input-error.component';
 import { ErrorComponent } from "../message/error/error.component";
+import { EventsService } from '../../service/events.service';
 
 interface StatusForm {
   status_id: string;
@@ -40,6 +40,7 @@ interface StatusForm {
     cancellation_reason?: string;
     cancellation_date?: string;
   };
+  related_document_id?: string;
 }
 
 @Component({
@@ -83,7 +84,8 @@ export class ChangestatusComponent implements OnChanges {
     this.statusForm = this.fb.group({
       status_id: ['', Validators.required],
       comment: [''],
-      form: this.fb.group({})
+      form: this.fb.group({}),
+      related_document_id: [''],
     });
   }
 
@@ -92,7 +94,8 @@ export class ChangestatusComponent implements OnChanges {
     private dataService: DataService,
     private router: Router,
     private notificationService: NotificationService,
-    private dialog: MatDialog
+    private dialog: MatDialog,
+    private eventsService: EventsService
   ) {
     this.initForms();
     this.loadDepartments();
@@ -144,7 +147,7 @@ export class ChangestatusComponent implements OnChanges {
       case 'in_process':
         formGroup.addControl('responsible', new FormControl('', Validators.required));
         formGroup.addControl('department', new FormControl('', Validators.required));
-        formGroup.addControl('description', new FormControl('', Validators.required));
+        formGroup.addControl('description', new FormControl(''));
         break;
 
       case 'in_signing':
@@ -156,20 +159,20 @@ export class ChangestatusComponent implements OnChanges {
       case 'in_signed':
         formGroup.addControl('concluded_by', new FormControl('', Validators.required));
         formGroup.addControl('signing_date', new FormControl('', Validators.required));
-        formGroup.addControl('conclusion_notes', new FormControl('', Validators.required));
+        formGroup.addControl('conclusion_notes', new FormControl(''));
         break;
 
       case 'completed':
         formGroup.addControl('concluded_by', new FormControl('', Validators.required));
         formGroup.addControl('conclusion_date', new FormControl('', Validators.required));
-        formGroup.addControl('conclusion_notes', new FormControl('', Validators.required));
+        formGroup.addControl('conclusion_notes', new FormControl(''));
         break;
 
       case 'delivered':
         formGroup.addControl('delivered_by', new FormControl('', Validators.required));
         formGroup.addControl('delivery_to', new FormControl('', Validators.required));
         formGroup.addControl('delivery_date', new FormControl('', Validators.required));
-        formGroup.addControl('delivery_notes', new FormControl('', Validators.required));
+        formGroup.addControl('delivery_notes', new FormControl(''));
         break;
 
       case 'archived':
@@ -229,11 +232,14 @@ export class ChangestatusComponent implements OnChanges {
     const statusData: StatusForm = {
       status_id: this.statusForm.value.status_id!,
       comment: this.statusForm.value.comment || undefined,
-      form: this.statusForm.value.form || {}
+      form: this.statusForm.value.form || {},
+      related_document_id: this.statusForm.value.related_document_id || null,
     };
+    console.log('StatusData a enviar:', statusData);
     this.dataService.updateDocumentStatus(this.documentId, statusData).subscribe({
       next: (response) => {
         this.notificationService.showSuccess('Éxito', response.message || 'Estado actualizado correctamente');
+        this.eventsService.notifyStatusChanged();
         this.closed.emit();
       },
       error: (error) => {
@@ -256,9 +262,9 @@ export class ChangestatusComponent implements OnChanges {
     }
     const dialogRef = this.dialog.open(AddDocumentComponent, {
 
-      width: 'fit-content',         // Buen tamaño para 1600x900
-      maxWidth: '40vw',       // Se adapta a pantallas más pequeñas
-      maxHeight: '90vh',      // Evita que ocupe toda la altura
+      width: 'fit-content',
+      maxWidth: '40vw', 
+      maxHeight: '90vh',
       panelClass: 'status-dialog',
 
       autoFocus: false,
@@ -271,10 +277,15 @@ export class ChangestatusComponent implements OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === 'success') {
+  console.log('Resultado del modal AddDocument:', result); // <-- Esto debe mostrar el objeto con newDocumentId
+
+      if (result?.result === 'success' && result?.newDocumentId) {
+        this.statusForm.patchValue({ related_document_id: result.newDocumentId });
         this.handleSave();
-        this.notificationService.showSuccess('Exito', 'Documento relacionado x2');
+        this.notificationService.showSuccess('Exito', 'Documento relacionado creado y estatus actualizado');
         this.closed.emit();
+      } else{
+        this.notificationService.showSuccess('Exito', 'Documento Cancelado');
       }
     });
   }
@@ -289,7 +300,15 @@ export class ChangestatusComponent implements OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-      if (result === 'success') {
+      if (result?.result === 'success' && result?.newDocumentId) {
+        // Guarda el ID del documento cancelado en el form
+        const formGroup = this.statusForm.get('form') as FormGroup;
+        formGroup.addControl('cancelled_document_id', new FormControl(result.newDocumentId));
+        
+        this.handleSave();
+        this.notificationService.showSuccess('Exito', 'Documento cancelado y estatus actualizado');
+      } else if (result === 'success') {
+        // Fallback para compatibilidad
         this.handleSave();
         this.notificationService.showSuccess('Exito', 'Documento cancelado');
       }
