@@ -70,6 +70,18 @@ textarea {
 label{
     font-size: .9rem;
 }
+
+.status-badge {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 400;
+    margin-left: 8px;
+    background-color: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
 .form-group input[type="text"],
 .form-group input[type="date"],
 .form-group select,
@@ -219,6 +231,16 @@ input[type="file"]{
     color: red;
 }
 
-
+button.cancel{
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: auto;
+    margin-left: 3em;
+}
+.cancel:hover{
+    background-color: var(--color-theme-red);
+}
 
 

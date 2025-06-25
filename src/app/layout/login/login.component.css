@@ -6,7 +6,7 @@
 
 .login_container{
     box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
-    padding: 2em 1em;
+    padding: 1em 2em 2em 2em;
     margin: 20px auto;
     width: 25rem;
     border-radius: 10px;
@@ -119,9 +119,9 @@
   }
 
   .imgcontainer{
-    height: 80px;
+    height: 110px;
     width: fit-content;
-    margin: 0 auto;
+    margin: 5px auto;
     img{
       height: 100%;
     }

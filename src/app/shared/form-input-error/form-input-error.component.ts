@@ -23,17 +23,29 @@ import { animate, style, transition, trigger } from '@angular/animations';
   styles: [`
   :host {
     --error-color: #dc3545;
-    --error-bg-color: #f8d7da;
+    --error-bg-color: rgba(220, 53, 69, 0.1);
     --error-border-color: #f5c6cb;
+    position: relative;
+    display: block;
   }
 
   .error-messages {
-    margin-top: 0.5rem;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    
   }
 
   .error-message {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 10;
     color: var(--error-color);
-    font-size: 0.875rem;
+    font-size: 12px;
     padding: 0.25rem 0.5rem;
     background-color: var(--error-bg-color);
     border-radius: 0.25rem;
@@ -41,6 +53,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     align-items: center;
     gap: 0.5rem;
     margin-top: 0.25rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   }
 
   .error-icon {

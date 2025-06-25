@@ -226,7 +226,7 @@ export class ChangestatusComponent implements OnChanges {
     });
 
     if (this.statusForm.invalid) {
-      this.notificationService.showError('Error', 'Complete todos los campos requeridos');
+      this.notificationService.showError('Complete todos los campos requeridos', 'Error');
       return;
     }
     const statusData: StatusForm = {
@@ -238,12 +238,12 @@ export class ChangestatusComponent implements OnChanges {
     console.log('StatusData a enviar:', statusData);
     this.dataService.updateDocumentStatus(this.documentId, statusData).subscribe({
       next: (response) => {
-        this.notificationService.showSuccess('Éxito', response.message || 'Estado actualizado correctamente');
+        this.notificationService.showSuccess(response.message || 'Estado actualizado correctamente', 'Éxito');
         this.eventsService.notifyStatusChanged();
         this.closed.emit();
       },
       error: (error) => {
-        this.notificationService.showError('Error', error.error?.message || 'Error al actualizar el estado');
+        this.notificationService.showError(error.error?.message || 'Error al actualizar el estado', 'Error');
       }
     });
   }
@@ -257,7 +257,7 @@ export class ChangestatusComponent implements OnChanges {
     });
 
     if (this.statusForm.invalid) {
-      this.notificationService.showError('Error', 'Complete todos los campos requeridos');
+      this.notificationService.showError('Complete todos los campos requeridos', 'Error');
       return;
     }
     const dialogRef = this.dialog.open(AddDocumentComponent, {
@@ -277,20 +277,19 @@ export class ChangestatusComponent implements OnChanges {
     });
 
     dialogRef.afterClosed().subscribe(result => {
-  console.log('Resultado del modal AddDocument:', result); // <-- Esto debe mostrar el objeto con newDocumentId
 
       if (result?.result === 'success' && result?.newDocumentId) {
         this.statusForm.patchValue({ related_document_id: result.newDocumentId });
         this.handleSave();
-        this.notificationService.showSuccess('Exito', 'Documento relacionado creado y estatus actualizado');
+        this.notificationService.showSuccess('Documento relacionado creado', 'Exito');
         this.closed.emit();
       } else{
-        this.notificationService.showSuccess('Exito', 'Documento Cancelado');
+        this.notificationService.showSuccess('Documento Cancelado', 'Exito');
       }
     });
   }
 
-  cancelDocument() {
+  /*cancelDocument() {
     const dialogRef = this.dialog.open(AddDocumentComponent, {
       width: '600px',
       data: {
@@ -306,14 +305,14 @@ export class ChangestatusComponent implements OnChanges {
         formGroup.addControl('cancelled_document_id', new FormControl(result.newDocumentId));
         
         this.handleSave();
-        this.notificationService.showSuccess('Exito', 'Documento cancelado y estatus actualizado');
+        this.notificationService.showSuccess('Documento cancelado y estatus actualizado', 'Exito');
       } else if (result === 'success') {
         // Fallback para compatibilidad
         this.handleSave();
-        this.notificationService.showSuccess('Exito', 'Documento cancelado');
+        this.notificationService.showSuccess('Documento cancelado', 'Exito');
       }
     });
-  }
+  }*/
 
   // Helper methods for status colors, tooltips and error messages
   getStatusColor(statusId: string): string {

@@ -5,6 +5,7 @@ import { DataService } from '../../service/data.service';
 import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, ValidationErrors, Validators } from '@angular/forms';
 import { NotificationService } from '../../service/notification.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { AuthService } from '../../service/auth.service';
 
 interface ArchivoSubido {
   id: number;
@@ -45,21 +46,46 @@ export class AddDocumentComponent {
   typeText: boolean = false;
   archivosSubidos: ArchivoSubido[] = [];  // Arreglo para guardar los archivos
   FileArray: File[] = [];
+  currentUser: any = null;
+  isAdmin: boolean = false;
+  isReceiverDepartmentDisabled: boolean = false;
 
   constructor(
     private dataService: DataService,
     private router: Router,
     private notificationService: NotificationService,
+    private authService: AuthService,
     @Optional() public dialogRef?: MatDialogRef<AddDocumentComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
-
-
   ) {
     //console.log("aqui el parent nbb::",data)
 }
 
   ngOnInit(): void {
     this.data = this.data || {};
+    
+    // Obtener información del usuario actual
+    this.authService.getUserData().subscribe({
+      next: (userData) => {
+        this.currentUser = userData;
+        this.isAdmin = this.authService.isAdminUser();
+        this.isReceiverDepartmentDisabled = !this.isAdmin;
+        
+        // Habilitar o deshabilitar el control del departamento receptor
+        if (this.isReceiverDepartmentDisabled) {
+          this.datosDocumento.get('receiver_department_id')?.disable();
+        } else {
+          this.datosDocumento.get('receiver_department_id')?.enable();
+        }
+
+        // Configurar departamento receptor por defecto después de obtener datos del usuario
+        this.setDefaultReceiverDepartment();
+      },
+      error: (error) => {
+        console.error('Error al obtener datos del usuario:', error);
+      }
+    });
+
     this.dataService.createDocument().subscribe({
       next: (response) => {
 
@@ -68,6 +94,19 @@ export class AddDocumentComponent {
         this.formData.senders_department = response.senders_department || [];
         this.formData.receivers_department = response.receivers_department || [];
         this.datosDocumento.patchValue({ sender_department_id: '' });
+
+        // Seleccionar automáticamente la categoría "oficio" si existe
+        const oficioCategory = this.formData.categories.find(cat => 
+          cat.name.toLowerCase().includes('oficio')
+        );
+        if (oficioCategory) {
+          this.datosDocumento.patchValue({ category_id: oficioCategory.id.toString() });
+        }
+
+        // Configurar departamento receptor por defecto si ya tenemos los datos del usuario
+        if (this.currentUser) {
+          this.setDefaultReceiverDepartment();
+        }
 
       },
       error: (error) => {
@@ -158,7 +197,6 @@ export class AddDocumentComponent {
       this.dataService.storeDocument(formData).subscribe({
         next: (response) => {
           if (this.data.mode === 'related') {
-            this.notificationService.showSuccess('Exito','Documento relacionado creado');
             if (this.dialogRef) {
             this.dialogRef.close({
               result:'success',
@@ -167,23 +205,23 @@ export class AddDocumentComponent {
             }
           } else {
             this.router.navigate(['/main']);
-            this.notificationService.showSuccess('Éxito', 'Documento creado exitosamente');
+            this.notificationService.showSuccess('Documento creado exitosamente', 'Éxito');
           }
         },
         error: (error) => {
-          this.notificationService.showError('Error', error.error?.message || 'Falló la subida');
+          this.notificationService.showError(error.error?.message || 'Falló la subida', 'Error');
         }
       });
     } else {
       const senderDept = this.datosDocumento.get('sender_department')?.value;
       const newSenderDept = this.datosDocumento.get('new_sender_department')?.value;
       if (!senderDept && !newSenderDept) {
-        this.notificationService.showError('Debes seleccionar un departamento emisor o agregar uno nuevo.', 'Error');
+        this.notificationService.showError('Seleccionar un remitente o agregar uno nuevo', 'Error');
         return;
       }
 
       this.datosDocumento.markAllAsTouched();
-      this.notificationService.showError('Error', 'Revisa los campos obligatorios');
+      this.notificationService.showError('Revisa los campos obligatorios', 'Error');
     }
   }
 
@@ -208,6 +246,31 @@ export class AddDocumentComponent {
     return sender || newSender ? null : { senderMissing: true };
   }
 
+  setDefaultReceiverDepartment() {
+    // Si el usuario no es administrador y tiene un departamento, seleccionarlo por defecto
+    if (!this.isAdmin && this.currentUser?.department?.id) {
+      const userDepartment = this.formData.receivers_department.find(dept => 
+        dept.id === this.currentUser.department.id
+      );
+      
+      if (userDepartment) {
+        // Habilitar temporalmente el control para establecer el valor
+        const receiverControl = this.datosDocumento.get('receiver_department_id');
+        const wasDisabled = receiverControl?.disabled;
+        
+        if (wasDisabled) {
+          receiverControl?.enable();
+        }
+        
+        receiverControl?.setValue(userDepartment.id.toString());
+        
+        // Deshabilitar nuevamente si estaba deshabilitado
+        if (wasDisabled) {
+          receiverControl?.disable();
+        }
+      }
+    }
+  }
 
   onCancel() {
     if (this.dialogRef) {

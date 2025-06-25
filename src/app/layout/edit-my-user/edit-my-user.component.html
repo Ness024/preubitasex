@@ -82,7 +82,9 @@
 
         <!-- Botón para guardar -->
         <fieldset class="form-group submit">
-          <button type="submit">Guardar Documento</button>
+          <button type="submit" [disabled]="profileForm.invalid || !profileForm.dirty">
+            Guardar
+          </button>
         </fieldset>
 
       </form>
