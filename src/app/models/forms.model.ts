@@ -1,12 +1,14 @@
 // models/forms.model.ts
 
+import { Department } from "./document";
+
 export interface FormReceived {
   received_by: string;
   received_date: string;
 }
 
 export interface FormInProcess {
-  department: string;
+  department: Department;
   description: string;
   responsible: string;
 }
