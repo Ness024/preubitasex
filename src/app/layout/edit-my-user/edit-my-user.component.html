@@ -3,86 +3,89 @@
   <h2>Editar mi perfil</h2>
   <section class="container">
     <div class="data-container">
-      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">           
-        
+      <form [formGroup]="profileForm" (ngSubmit)="onSubmit()">
+
         <!-- Foto de perfil -->
         <fieldset class="form-group title">
           <div class="containera">
-              <h1>Selecciona una foto de perfil
-                  <small>preview</small>
-              </h1>
-              <div class="avatar-upload">
-                  <div class="avatar-edit">
-                      <input type='file' id="profile_photo" 
-                      name="profile_photo" 
-                      (change)="onFileSelected($event)" 
-                      accept="image/*"/>
-                      <label for="profile_photo"></label>
-                  </div>
-                  <div class="avatar-preview">
-                      <div id="imagePreview" [ngStyle]="{'background-image': previewUrl ? 'url(' + previewUrl + ')' : 'none'}">
-                      </div>
-                  </div>
+            <h1>Selecciona una foto de perfil
+              <small>preview</small>
+            </h1>
+            <div class="avatar-upload">
+              <div class="avatar-edit">
+                <input type='file' id="profile_photo" name="profile_photo" (change)="onFileSelected($event)"
+                  accept="image/*" />
+                <label for="profile_photo"></label>
               </div>
+              <div class="avatar-preview">
+                <div id="imagePreview"
+                  [ngStyle]="{'background-image': previewUrl ? 'url(' + previewUrl + ')' : 'none'}">
+                </div>
+              </div>
+            </div>
           </div>
         </fieldset>
-        
+
         <!-- Nombre -->
         <fieldset class="form-group title">
           <label for="name">Nombre</label>
-          <input formControlName="name" class="input-form" type="text" id="name" name="name" maxlength="255" placeholder="Nombre"/>
-          @if (profileForm.get("name")?.invalid && profileForm.get("name")?.touched) {
-            @if (profileForm.get("name")?.hasError("required")) {
-              <span class="msg_error">Campo obligatorio</span>
-            }
-            @if (profileForm.get("name")?.hasError("maxlength")) {
-              <span class="msg_error">El nombre no puede tener más de 255 caracteres</span>
-            }
-          }
+          <input formControlName="name" class="input-form" type="text" id="name" name="name" maxlength="255" placeholder="Nombre"
+            [class.is-invalid]="profileForm.get('name')?.invalid &&
+                            (profileForm.get('name')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="profileForm.get('name')!"
+                    [errorMessages]="getErrorMessages('name')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
         </fieldset>
 
         <!-- Username -->
         <label for="username">Alias (Username)</label>
         <fieldset class="form-group title">
-          <input formControlName="username" class="input-form" type="text" id="username" name="username" placeholder="Username"/>
-          @if (profileForm.get("username")?.invalid && profileForm.get("username")?.touched) {
-            @if (profileForm.get("username")?.hasError("required")) {
-              <span class="msg_error">Campo obligatorio</span>
-            }
-            @if (profileForm.get("username")?.hasError("maxlength")) {
-              <span class="msg_error">El Alias no puede tener más de 255 caracteres</span>
-            }
-          }
+          <input formControlName="username" class="input-form" type="text" id="username" name="username" placeholder="Username"
+            [class.is-invalid]="profileForm.get('username')?.invalid &&
+                            (profileForm.get('username')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="profileForm.get('username')!"
+                    [errorMessages]="getErrorMessages('username')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
         </fieldset>
 
         <!-- Nueva contraseña -->
-<label for="new_password">Nueva contraseña</label>
-<fieldset class="form-group title">
-  <input formControlName="new_password" class="input-form" type="password" id="new_password" name="new_password" placeholder="Nueva contraseña" />
-</fieldset>
+        <label for="new_password">Nueva contraseña</label>
+        <fieldset class="form-group title">
+          <input formControlName="new_password" class="input-form" type="password" id="new_password" name="new_password" placeholder="Nueva contraseña"
+            [class.is-invalid]="profileForm.get('new_password')?.invalid &&
+                            (profileForm.get('new_password')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="profileForm.get('new_password')!"
+                    [errorMessages]="getErrorMessages('new_password')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
 
-<!-- Condicionalmente mostrar confirmaciones solo si se empieza a escribir nueva contraseña -->
-@if (profileForm.get("new_password")?.value) {
-  <label for="new_password_confirmation">Confirmar nueva contraseña</label>
-  <fieldset class="form-group title">
-    <input formControlName="new_password_confirmation" class="input-form" type="password" id="new_password_confirmation" name="new_password_confirmation" placeholder="Confirmación" />
-    @if (profileForm.get("new_password_confirmation")?.hasError("required") && profileForm.get("new_password_confirmation")?.touched) {
-      <span class="msg_error">Campo obligatorio</span>
-    }
-  </fieldset>
+        @if (profileForm.get("new_password")?.value) {
+        <label for="new_password_confirmation">Confirmar nueva contraseña</label>
+        <fieldset class="form-group title">
+          <input formControlName="new_password_confirmation" class="input-form" type="password"
+            id="new_password_confirmation" name="new_password_confirmation" placeholder="Confirmación" 
+            [class.is-invalid]="shouldShowConditionalError('new_password_confirmation')" />
+                <app-form-input-error [control]="profileForm.get('new_password_confirmation')!"
+                    [errorMessages]="getErrorMessages('new_password_confirmation')" 
+                    [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
 
-  <label for="current_password">Contraseña actual</label>
-  <fieldset class="form-group title">
-    <input formControlName="current_password" class="input-form" type="password" id="current_password" name="current_password" placeholder="Contraseña actual" />
-    @if (profileForm.get("current_password")?.hasError("required") && profileForm.get("current_password")?.touched) {
-      <span class="msg_error">Campo obligatorio</span>
-    }
-  </fieldset>
-}
+        <label for="current_password">Contraseña actual</label>
+        <fieldset class="form-group title">
+          <input formControlName="current_password" class="input-form" type="password" id="current_password"
+            name="current_password" placeholder="Contraseña actual"
+            [class.is-invalid]="shouldShowConditionalError('current_password')" />
+                <app-form-input-error [control]="profileForm.get('current_password')!"
+                    [errorMessages]="getErrorMessages('current_password')" 
+                    [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+        }
 
         <!-- Botón para guardar -->
         <fieldset class="form-group submit">
-          <button type="submit" [disabled]="profileForm.invalid || !profileForm.dirty">
+          <button type="submit">
             Guardar
           </button>
         </fieldset>

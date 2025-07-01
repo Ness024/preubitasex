@@ -1,0 +1,12 @@
+@for (message of messages; track message.id) {
+    <section class="toast-succces" @fade>
+      <button (click)="closeMessage(message.id)">x</button>
+      <svg class="b" xmlns="http://www.w3.org/2000/svg" width="50" height="50" viewBox="0 0 24 24">
+        <path fill="#ff9800" d="M12 2L1 21h22L12 2zm0 3.17L19.83 19H4.17L12 5.17zM11 16h2v2h-2zm0-6h2v4h-2z"/>
+      </svg>
+      <div>
+        <h5>{{message.title}}</h5>
+        <p>{{ message.message }}</p>
+      </div>
+    </section>
+}

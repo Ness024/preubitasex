@@ -1,0 +1,98 @@
+section{
+    border-radius: 2px 5px 5px 2px;
+    display: flex;
+    width: 300px;
+    height: 80px;
+    max-width: 300px;
+    max-height: 300px;
+    overflow: hidden;
+    padding: 10px 20px;
+    box-shadow: rgba(0, 0, 0, 0.19) 0px 10px 20px, rgba(0, 0, 0, 0.23) 0px 6px 6px;
+    align-items: center;
+    border-left: 4px #ff9800 solid;
+    transition: all .2s ease-in;
+    gap: 20px;
+    position: relative;
+    cursor: default;
+    background: white;
+    z-index: 2000 !important;
+
+}
+
+h5{
+    font-family: 'Inter', Courier, monospace;
+    font-weight: 600;
+    color: #ff9800;
+
+}
+p{
+    font-size: small;
+    font-family: 'Inter', Courier, monospace;
+    font-weight: 400;
+}
+button{
+    position: absolute;
+    top: 0;
+    right: 0;
+    background: none;
+    border: none;
+    color: var(--color-theme-light-gray);
+    padding: 5px;
+    aspect-ratio: 1/1;
+    width: 30px;
+    border-radius: 0 0 0 10px;
+}
+button:hover{
+    background: #f3f3f3;
+    color: rgb(53, 53, 53);
+}
+
+
+.toast-succces.enter{
+    animation: entrada 700ms ease-in-out 0s 1 normal none;
+}
+
+.toast-succces.leave{
+    animation: salida 700ms ease-in-out 0s 1 normal none;
+}
+
+@keyframes entrada {
+	from {
+		opacity: 0;
+		transform: translateX(250px);
+	}
+
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+@keyframes salida {
+	from {
+		opacity: 1;
+		transform: translateX(0);
+	}
+
+	to {
+		opacity: 0;
+		transform: translateX(50px);
+	}
+}
+
+.toast-succces h5 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1; /* Máximo 1 línea */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-weight: bold;
+  }
+
+  .toast-succces p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Máximo 2 líneas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }

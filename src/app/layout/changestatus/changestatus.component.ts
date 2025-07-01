@@ -15,6 +15,7 @@ import { AddDocumentComponent } from '../add-document/add-document.component';
 import { FormInputErrorComponent } from '../../shared/form-input-error/form-input-error.component';
 import { ErrorComponent } from "../message/error/error.component";
 import { EventsService } from '../../service/events.service';
+import { FORM_ERROR_MESSAGES } from '../../shared/constants/form-error-messages';
 
 interface StatusForm {
   status_id: string;
@@ -60,6 +61,17 @@ export class ChangestatusComponent implements OnChanges {
   @Input() sendStatusId!: number;
 
 
+  currentStatusId = '';
+  departments: any[] = [];
+  statusForm!: FormGroup;
+  formSubmitted = false;
+  errorMessages = FORM_ERROR_MESSAGES;
+
+  contenidoModal = '';
+  followUpOptionForm = new FormGroup({
+    followUpOption: new FormControl('No')
+  });
+
   estados = [
     { id: 'received', name: 'Recepcionado' },
     { id: 'in_process', name: 'En Trámite' },
@@ -71,24 +83,6 @@ export class ChangestatusComponent implements OnChanges {
     { id: 'cancelled', name: 'Cancelado' }
   ];
 
-  contenidoModal = '';
-  followUpOptionForm = new FormGroup({
-    followUpOption: new FormControl('No')
-  });
-  currentStatusId = '';
-  departments: any[] = [];
-  statusForm!: FormGroup;
-  formSubmitted = false;
-
-  private initForms() {
-    this.statusForm = this.fb.group({
-      status_id: ['', Validators.required],
-      comment: [''],
-      form: this.fb.group({}),
-      related_document_id: [''],
-    });
-  }
-
   constructor(
     private fb: FormBuilder,
     private dataService: DataService,
@@ -99,6 +93,15 @@ export class ChangestatusComponent implements OnChanges {
   ) {
     this.initForms();
     this.loadDepartments();
+  }
+
+  private initForms() {
+    this.statusForm = this.fb.group({
+      status_id: ['', Validators.required],
+      comment: [''],
+      form: this.fb.group({}),
+      related_document_id: [''],
+    });
   }
 
   loadDepartments() {
@@ -199,7 +202,11 @@ export class ChangestatusComponent implements OnChanges {
   }
 
   getErrorMessages(fieldName: string): any {
-    return (this.errorMessages as any)[fieldName] || {};
+    const msg = this.errorMessages[fieldName as keyof typeof this.errorMessages];
+    if (typeof msg === 'string') {
+      return { required: msg };
+    }
+    return msg || {};
   }
 
   resetFormState(): void {
@@ -249,9 +256,7 @@ export class ChangestatusComponent implements OnChanges {
   }
 
   continueToDocument() {
-
     this.formSubmitted = true;
-
     Object.keys(this.statusForm.controls).forEach(key => {
       this.statusForm.get(key)?.markAsTouched();
     });
@@ -263,7 +268,7 @@ export class ChangestatusComponent implements OnChanges {
     const dialogRef = this.dialog.open(AddDocumentComponent, {
 
       width: 'fit-content',
-      maxWidth: '40vw', 
+      maxWidth: '40vw',
       maxHeight: '90vh',
       panelClass: 'status-dialog',
 
@@ -283,36 +288,11 @@ export class ChangestatusComponent implements OnChanges {
         this.handleSave();
         this.notificationService.showSuccess('Documento relacionado creado', 'Exito');
         this.closed.emit();
-      } else{
+      } else {
         this.notificationService.showSuccess('Documento Cancelado', 'Exito');
       }
     });
   }
-
-  /*cancelDocument() {
-    const dialogRef = this.dialog.open(AddDocumentComponent, {
-      width: '600px',
-      data: {
-        parentId: this.documentId,
-        mode: 'cancelled',
-      },
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      if (result?.result === 'success' && result?.newDocumentId) {
-        // Guarda el ID del documento cancelado en el form
-        const formGroup = this.statusForm.get('form') as FormGroup;
-        formGroup.addControl('cancelled_document_id', new FormControl(result.newDocumentId));
-        
-        this.handleSave();
-        this.notificationService.showSuccess('Documento cancelado y estatus actualizado', 'Exito');
-      } else if (result === 'success') {
-        // Fallback para compatibilidad
-        this.handleSave();
-        this.notificationService.showSuccess('Documento cancelado', 'Exito');
-      }
-    });
-  }*/
 
   // Helper methods for status colors, tooltips and error messages
   getStatusColor(statusId: string): string {
@@ -343,68 +323,6 @@ export class ChangestatusComponent implements OnChanges {
     return tooltips[statusId] || ' ';
   }
   getStatusColorClass(statusId: string): string {
-  return 'tooltip-' + statusId;
-}
-
-  errorMessages = {
-    required: 'Este campo es requerido',
-    received_by: {
-      required: 'Debe especificar quien recibió el documento',
-      minlength: 'El nombre debe tener al menos 3 caracteres'
-    },
-    received_date: {
-      required: 'La fecha de recepción es obligatoria'
-    },
-    responsible: {
-      required: 'Debe especificar un responsable para el trámite'
-    },
-    department: {
-      required: 'Debe seleccionar un departamento'
-    },
-    description: {
-      required: 'Debe proporcionar una descripción del trámite'
-    },
-    sent_to: {
-      required: 'Debe especificar a quien se envió el documento para firma'
-    },
-    position: {
-      required: 'Debe especificar el cargo o posición de la persona que firma'
-    },
-    deadline_date: {
-      required: 'Debe establecer una fecha límite para la firma'
-    },
-    signed_by: {
-      required: 'Debe especificar quien concluyó el trámite'
-    },
-    signing_date: {
-      required: 'La fecha de firma es obligatoria'
-    },
-    concluded_by: {
-      required: 'Debe especificar quien concluyó el trámite'
-    },
-    conclusion_date: {
-      required: 'La fecha de conclusión es obligatoria'
-    },
-    archived_by: {
-      required: 'Debe especificar quien archivó el documento'
-    },
-    archived_date: {
-      required: 'La fecha de archivo es obligatoria'
-    },
-    delivered_by: {
-      required: 'Debe especificar quien entregó el documento'
-    },
-    delivery_to: {
-      required: 'Debe especificar a quien se entregó el documento'
-    },
-    delivery_date: {
-      required: 'La fecha de entrega es obligatoria'
-    },
-    cancellation_reason: {
-      required: 'Debe proporcionar un motivo para la cancelación'
-    },
-    cancellation_date: {
-      required: 'La fecha de cancelación es obligatoria'
-    },
-  };
+    return 'tooltip-' + statusId;
+  }
 }

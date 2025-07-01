@@ -3,12 +3,13 @@ import { HeaderComponent } from "../header/header.component";
 import { RouterOutlet } from '@angular/router';
 import { ErrorComponent } from "../message/error/error.component";
 import { SuccessfulComponent } from "../message/successful/successful.component";
+import { WarningComponent } from "../message/warning/warning.component";
 import { MatButtonModule } from '@angular/material/button';
 import { MenuComponent } from "../menu/menu.component";
 
 @Component({
   selector: 'app-main',
-  imports: [HeaderComponent, RouterOutlet, ErrorComponent, SuccessfulComponent, MatButtonModule, MenuComponent],
+  imports: [HeaderComponent, RouterOutlet, ErrorComponent, SuccessfulComponent, MatButtonModule, MenuComponent, WarningComponent],
   templateUrl: './main.component.html',
   styleUrl: './main.component.css'
 })

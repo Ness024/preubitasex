@@ -6,6 +6,9 @@ import { AbstractControl, FormControl, FormGroup, ReactiveFormsModule, Validatio
 import { NotificationService } from '../../service/notification.service';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AuthService } from '../../service/auth.service';
+import { FORM_ERROR_MESSAGES } from '../../shared/constants/form-error-messages';
+import { FormInputErrorComponent } from '../../shared/form-input-error/form-input-error.component';
+import { CommonModule } from '@angular/common';
 
 interface ArchivoSubido {
   id: number;
@@ -17,7 +20,7 @@ interface ArchivoSubido {
 
 @Component({
   selector: 'app-add-document',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FormInputErrorComponent, CommonModule],
   templateUrl: './add-document.component.html',
   styleUrl: './add-document.component.css'
 })
@@ -31,8 +34,8 @@ export class AddDocumentComponent {
     reference_number: new FormControl<string>('', [Validators.required, Validators.maxLength(255)]),
     category_id: new FormControl<string>('', [Validators.required]),
     status_id: new FormControl<string>('', [Validators.required]),
-    sender_department_id: new FormControl<number | string>(0),
-    new_sender_department: new FormControl<string | null>(''), // Nuevo campo opcional
+    sender_department_id: new FormControl<number | string>('', [Validators.required]),
+    new_sender_department: new FormControl<string | null>('', [Validators.required]),
     receiver_department_id: new FormControl<string>('', [Validators.required]),
     issue_date: new FormControl<string>('', [Validators.required]),
     received_date: new FormControl<string>('', [Validators.required]),
@@ -44,12 +47,19 @@ export class AddDocumentComponent {
   selectedFile: File | null = null;
   fileName: string = '';
   typeText: boolean = false;
-  archivosSubidos: ArchivoSubido[] = [];  // Arreglo para guardar los archivos
+  archivosSubidos: ArchivoSubido[] = []; 
   FileArray: File[] = [];
   currentUser: any = null;
   isAdmin: boolean = false;
   isReceiverDepartmentDisabled: boolean = false;
-
+  errorMessages = FORM_ERROR_MESSAGES;
+  formSubmitted = false;
+  
+  // Propiedades para el buscador de departamentos
+  showDepartmentSearch = false;
+  departmentSearchTerm = '';
+  filteredDepartments: any[] = [];
+  
   constructor(
     private dataService: DataService,
     private router: Router,
@@ -57,9 +67,7 @@ export class AddDocumentComponent {
     private authService: AuthService,
     @Optional() public dialogRef?: MatDialogRef<AddDocumentComponent>,
     @Optional() @Inject(MAT_DIALOG_DATA) public data?: any
-  ) {
-    //console.log("aqui el parent nbb::",data)
-}
+  ) { }
 
   ngOnInit(): void {
     this.data = this.data || {};
@@ -150,7 +158,7 @@ export class AddDocumentComponent {
       this.archivosSubidos.push(nuevoArchivo);
       this.FileArray.push(nuevoArchivo.file);
 
-      // 🔽 Actualiza el valor del FormControl en el formulario reactivo
+      //  Actualiza el valor del FormControl en el formulario reactivo
       this.datosDocumento.patchValue({
         files: this.FileArray
       });
@@ -161,6 +169,7 @@ export class AddDocumentComponent {
   }
 
   onSubmit() {
+    this.formSubmitted = true;
     if (this.datosDocumento.valid) {
       const formData = new FormData();
       const senderDept = this.datosDocumento.get('sender_department_id')?.value;
@@ -207,43 +216,185 @@ export class AddDocumentComponent {
             this.router.navigate(['/main']);
             this.notificationService.showSuccess('Documento creado exitosamente', 'Éxito');
           }
+          this.formSubmitted = false;
         },
         error: (error) => {
-          this.notificationService.showError(error.error?.message || 'Falló la subida', 'Error');
+          this.notificationService.showError(error.error?.message || 'Fallo la conexión con el servidor', 'Error');
         }
       });
     } else {
-      const senderDept = this.datosDocumento.get('sender_department')?.value;
-      const newSenderDept = this.datosDocumento.get('new_sender_department')?.value;
-      if (!senderDept && !newSenderDept) {
-        this.notificationService.showError('Seleccionar un remitente o agregar uno nuevo', 'Error');
-        return;
-      }
-
-      this.datosDocumento.markAllAsTouched();
-      this.notificationService.showError('Revisa los campos obligatorios', 'Error');
+      this.notificationService.showError('Complete todos los campos requeridos', 'Error');
     }
   }
 
   SelecttoText(event: Event) {
     const select = this.datosDocumento.get('sender_department_id');
-    if (select?.value === 'NewDep') {
+    const selectedValue = select?.value;
+    
+    if (selectedValue === 'NewDep') {
+      // Activar modo texto para nuevo departamento
       this.typeText = true;
+      // Limpiar el campo de texto y sus errores
+      this.datosDocumento.get('new_sender_department')?.reset();
+      this.datosDocumento.get('new_sender_department')?.setErrors(null);
+      this.datosDocumento.get('new_sender_department')?.markAsUntouched();
+      // Limpiar el select y sus errores
       this.datosDocumento.patchValue({ sender_department_id: '' });
-    } else {
-      this.negTypeText();  // resetea el campo adicional si elige un departamento válido
+      this.datosDocumento.get('sender_department_id')?.setErrors(null);
+      this.datosDocumento.get('sender_department_id')?.markAsUntouched();
+      // Marcar el campo de texto como requerido
+      this.datosDocumento.get('new_sender_department')?.setValidators([Validators.required]);
+      this.datosDocumento.get('new_sender_department')?.updateValueAndValidity();
+      // Quitar validación del select
+      this.datosDocumento.get('sender_department_id')?.clearValidators();
+      this.datosDocumento.get('sender_department_id')?.updateValueAndValidity();
+    } else if (selectedValue && selectedValue !== '') {
+      // Se seleccionó un departamento existente, desactivar modo texto
+      this.typeText = false;
+      // Limpiar el campo de texto y sus errores
+      this.datosDocumento.patchValue({ new_sender_department: '' });
+      this.datosDocumento.get('new_sender_department')?.setErrors(null);
+      this.datosDocumento.get('new_sender_department')?.markAsUntouched();
+      // Quitar validación del campo de texto
+      this.datosDocumento.get('new_sender_department')?.clearValidators();
+      this.datosDocumento.get('new_sender_department')?.updateValueAndValidity();
+      // Marcar el select como requerido
+      this.datosDocumento.get('sender_department_id')?.setValidators([Validators.required]);
+      this.datosDocumento.get('sender_department_id')?.updateValueAndValidity();
     }
   }
 
   negTypeText() {
     this.typeText = false;
+    // Limpiar el campo de texto y sus errores
     this.datosDocumento.patchValue({ new_sender_department: '' });
+    this.datosDocumento.get('new_sender_department')?.setErrors(null);
+    this.datosDocumento.get('new_sender_department')?.markAsUntouched();
+    // Limpiar el select y sus errores
+    this.datosDocumento.patchValue({ sender_department_id: '' });
+    this.datosDocumento.get('sender_department_id')?.setErrors(null);
+    this.datosDocumento.get('sender_department_id')?.markAsUntouched();
+    // Quitar validación del campo de texto
+    this.datosDocumento.get('new_sender_department')?.clearValidators();
+    this.datosDocumento.get('new_sender_department')?.updateValueAndValidity();
+    // Marcar el select como requerido
+    this.datosDocumento.get('sender_department_id')?.setValidators([Validators.required]);
+    this.datosDocumento.get('sender_department_id')?.updateValueAndValidity();
+    // Cerrar el buscador
+    this.showDepartmentSearch = false;
+    this.departmentSearchTerm = '';
+  }
+
+  // Métodos para el buscador de departamentos
+  onDepartmentSearchFocus() {
+    this.showDepartmentSearch = true;
+    this.filteredDepartments = [...this.formData.senders_department];
+  }
+
+  onDepartmentSearchBlur() {
+    // Pequeño delay para permitir que el clic en las opciones se registre
+    setTimeout(() => {
+      this.showDepartmentSearch = false;
+    }, 200);
+  }
+
+  onDepartmentSearch(event: Event) {
+    const searchTerm = (event.target as HTMLInputElement).value.toLowerCase();
+    this.departmentSearchTerm = searchTerm;
+    
+    if (!searchTerm) {
+      this.filteredDepartments = [...this.formData.senders_department];
+    } else {
+      this.filteredDepartments = this.formData.senders_department.filter(dept => 
+        dept.name.toLowerCase().includes(searchTerm)
+      );
+    }
+  }
+
+  onDepartmentSelect(department: any) {
+    this.datosDocumento.patchValue({ sender_department_id: department.id.toString() });
+    this.departmentSearchTerm = department.name;
+    this.showDepartmentSearch = false;
+    this.typeText = false;
+    
+    // Limpiar el campo de texto y sus errores
+    this.datosDocumento.patchValue({ new_sender_department: '' });
+    this.datosDocumento.get('new_sender_department')?.setErrors(null);
+    this.datosDocumento.get('new_sender_department')?.markAsUntouched();
+    // Quitar validación del campo de texto
+    this.datosDocumento.get('new_sender_department')?.clearValidators();
+    this.datosDocumento.get('new_sender_department')?.updateValueAndValidity();
+    // Marcar el select como requerido
+    this.datosDocumento.get('sender_department_id')?.setValidators([Validators.required]);
+    this.datosDocumento.get('sender_department_id')?.updateValueAndValidity();
+  }
+
+  onAddNewDepartment() {
+    this.typeText = true;
+    this.showDepartmentSearch = false;
+    this.departmentSearchTerm = '';
+    // Limpiar el campo de texto y sus errores
+    this.datosDocumento.get('new_sender_department')?.reset();
+    this.datosDocumento.get('new_sender_department')?.setErrors(null);
+    this.datosDocumento.get('new_sender_department')?.markAsUntouched();
+    // Limpiar el select y sus errores
+    this.datosDocumento.patchValue({ sender_department_id: '' });
+    this.datosDocumento.get('sender_department_id')?.setErrors(null);
+    this.datosDocumento.get('sender_department_id')?.markAsUntouched();
+    // Marcar el campo de texto como requerido
+    this.datosDocumento.get('new_sender_department')?.setValidators([Validators.required]);
+    this.datosDocumento.get('new_sender_department')?.updateValueAndValidity();
+    // Quitar validación del select
+    this.datosDocumento.get('sender_department_id')?.clearValidators();
+    this.datosDocumento.get('sender_department_id')?.updateValueAndValidity();
+  }
+
+  getSelectedDepartmentName(): string {
+    const selectedId = this.datosDocumento.get('sender_department_id')?.value;
+    if (!selectedId) return '';
+    
+    const department = this.formData.senders_department.find(dept => dept.id.toString() === selectedId);
+    return department ? department.name : '';
   }
 
   senderDepartmentValidator(group: AbstractControl): ValidationErrors | null {
     const sender = group.get('sender_department_id')?.value;
     const newSender = group.get('new_sender_department')?.value;
-    return sender || newSender ? null : { senderMissing: true };
+    
+    // Si no hay ningún valor, retornar error
+    if (!sender && !newSender) {
+      return { senderMissing: true };
+    }
+    
+    // Si hay valores en ambos campos, limpiar errores
+    if (sender && newSender) {
+      group.get('sender_department_id')?.setErrors(null);
+      group.get('new_sender_department')?.setErrors(null);
+    }
+    
+    return null;
+  }
+
+  // Método para obtener mensajes de error específicos según el campo activo
+  getSenderDepartmentErrorMessages(): any {
+    if (this.typeText) {
+      // Si está en modo texto, mostrar errores del campo de texto
+      return this.getErrorMessages('new_sender_department');
+    } else {
+      // Si está en modo select, mostrar errores del select
+      return this.getErrorMessages('sender_department_id');
+    }
+  }
+
+  // Método para verificar si debe mostrar error en el campo activo
+  shouldShowSenderDepartmentError(): boolean {
+    if (this.typeText) {
+      const control = this.datosDocumento.get('new_sender_department');
+      return control ? (control.invalid && (control.touched || this.formSubmitted)) : false;
+    } else {
+      const control = this.datosDocumento.get('sender_department_id');
+      return control ? (control.invalid && (control.touched || this.formSubmitted)) : false;
+    }
   }
 
   setDefaultReceiverDepartment() {
@@ -276,5 +427,13 @@ export class AddDocumentComponent {
     if (this.dialogRef) {
       this.dialogRef.close('cancelled');
     }
+  }
+
+  getErrorMessages(fieldName: string): any {
+    const msg = this.errorMessages[fieldName as keyof typeof this.errorMessages];
+    if (typeof msg === 'string') {
+      return { required: msg };
+    }
+    return msg || {};
   }
 }

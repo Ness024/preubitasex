@@ -186,7 +186,7 @@
       </fieldset>
       <fieldset class="form-group type">
         <label for="position">Cargo:</label>
-        <input class="input-form" type="text" formControlName="position" placeholder="Cargo del firmane"
+        <input class="input-form" type="text" formControlName="position" placeholder="Cargo del firmante"
           [class.is-invalid]="getFormControl('position')?.invalid &&
                             (getFormControl('position')?.touched || formSubmitted)">
         <app-form-input-error [control]="getFormControl('position')!" [errorMessages]="errorMessages.position"
@@ -352,9 +352,11 @@
     </div>
     <fieldset class="form-group description comentarios">
       <label for="description">Comentario adicional (opcional)</label>
-      <textarea class="input-form" id="description" name="comment" rows="4"
+      <textarea class="input-form" id="description" name="comment" rows="4" maxlength="255"
         placeholder="Añade un comentario sobre este cambio de estatus..."
-        formControlName="comment"></textarea>
+        formControlName="comment">
+      </textarea>
+
     </fieldset>
 
     <fieldset class="form-group description" style="margin-bottom: 0;">

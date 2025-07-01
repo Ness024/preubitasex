@@ -63,7 +63,7 @@ textarea {
 }
 
 .form-group {
-  margin-bottom: 15px;
+  margin-bottom: 25px;
 }
 .form-group {
   display: block;
@@ -87,7 +87,7 @@ label {
   padding: 10px;
   border-radius: 5px;
   border: 1px solid #ccc;
-  margin-top: 5px;
+  margin-top: 0px;
 }
 .date_reecepcion input {
   cursor: pointer;

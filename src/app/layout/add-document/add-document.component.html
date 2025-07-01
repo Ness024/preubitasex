@@ -7,61 +7,54 @@
       <fieldset class="form-group title">
         <label for="reference_number">Numero de Oficio</label>
         <input formControlName="reference_number" class="input-form" type="text" id="reference_number"
-          name="reference_number" placeholder="Numero de referencia" required="" />
-        @if (datosDocumento.get("reference_number")?.invalid &&
-        datosDocumento.get("reference_number")?.touched) { @if
-        (datosDocumento.get("reference_number")?.hasError("required")) {
-        <span class="msg_error">El Numero de Oficio es obligatorio</span>
-        } @if (datosDocumento.get("reference_number")?.hasError("maxlength")) {
-        <span class="msg_error">El campo no puede tener más de 255 caracteres</span>
-        } }
+          name="reference_number" placeholder="Numero de referencia" required="" [class.is-invalid]="datosDocumento.get('reference_number')?.invalid &&
+                            (datosDocumento.get('reference_number')?.touched || formSubmitted)" />
+        <app-form-input-error [control]="datosDocumento.get('reference_number')!"
+          [errorMessages]="getErrorMessages('reference_number')" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
       </fieldset>
       <!-- Titulo del Documento -->
       <fieldset class="form-group title">
         <label for="title">Asunto</label>
         <input formControlName="title" class="input-form" type="text" id="title" name="title" maxlength="255"
-          placeholder="Ingrese el título del documento" />
-        @if (datosDocumento.get("title")?.invalid &&
-        datosDocumento.get("title")?.touched) { @if
-        (datosDocumento.get("title")?.hasError("required")) {
-        <span class="msg_error">El asunto es obligatorio</span>
-        } @if (datosDocumento.get("title")?.hasError("maxlength")) {
-        <span class="msg_error">El campo no puede tener más de 255 caracteres</span>
-        } }
+          placeholder="Ingrese el título del documento" [class.is-invalid]="datosDocumento.get('title')?.invalid &&
+                            (datosDocumento.get('title')?.touched || formSubmitted)" />
+        <app-form-input-error [control]="datosDocumento.get('title')!" [errorMessages]="getErrorMessages('title')"
+          [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
       </fieldset>
 
       <!-- Categoria-->
       <fieldset class="form-group type">
         <label for="category_id">Tipo de Documento</label>
         <select formControlName="category_id" class="input-form" id="category_id" name="category_id" required=""
-          placeholder="Seleccione una categoria">
+          placeholder="Seleccione una categoria" [class.is-invalid]="datosDocumento.get('category_id')?.invalid &&
+                            (datosDocumento.get('category_id')?.touched || formSubmitted)">
           <option value="" disabled selected>Selecciona una opción</option>
           @for (cat of formData.categories; track $index) {
           <option value="{{ cat.id }}">{{ cat.name }}</option>
           }
         </select>
-        @if (datosDocumento.get("category_id")?.invalid &&
-        datosDocumento.get("category_id")?.touched) { @if
-        (datosDocumento.get("category_id")?.hasError("required")) {
-        <span class="msg_error">Campo obligatorio</span>
-        } }
+        <app-form-input-error [control]="datosDocumento.get('category_id')!"
+          [errorMessages]="getErrorMessages('category_id')" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
       </fieldset>
 
       <!-- Estado -->
       <fieldset class="form-group status">
         <label for="status_id">Estado</label>
-        <select formControlName="status_id" class="input-form" id="status_id" name="status_id" required="">
+        <select formControlName="status_id" class="input-form" id="status_id" name="status_id" required=""
+          [class.is-invalid]="datosDocumento.get('status_id')?.invalid &&
+                            (datosDocumento.get('status_id')?.touched || formSubmitted)">
           <option value="" disabled selected>Selecciona una opción</option>
 
           @for (status of formData.statuses; track $index) {
           <option value="{{ status.id }}">{{ status.name }}</option>
           }
         </select>
-        @if (datosDocumento.get("status_id")?.invalid &&
-        datosDocumento.get("status_id")?.touched) { @if
-        (datosDocumento.get("status_id")?.hasError("required")) {
-        <span class="msg_error">Campo obligatorio</span>
-        } }
+        <app-form-input-error [control]="datosDocumento.get('status_id')!"
+          [errorMessages]="getErrorMessages('status_id')" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
       </fieldset>
 
       <!-- Departamento de envio -->
@@ -77,7 +70,7 @@
         @if (typeText) {
         <div class="newdepartament">
           <input type="text" formControlName="new_sender_department" class="input-form" id="new_sender_department"
-            name="new_sender_department" />
+            name="new_sender_department" [class.is-invalid]="shouldShowSenderDepartmentError()" />
           <button type="button" class="returnbutton" (click)="negTypeText()">
             <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 14 14">
               <path fill="currentColor" fill-rule="evenodd"
@@ -86,28 +79,40 @@
             </svg>
           </button>
         </div>
-        @if (datosDocumento.get("new_sender_department")?.invalid &&
-        datosDocumento.get("new_sender_department")?.touched) { @if
-        (datosDocumento.get("new_sender_department")?.hasError("required")) {
-        <span class="msg_error">Campo no puede estar vacio</span>
-        } @if (datosDocumento.get("new_sender_department")?.hasError("maxlength")) {
-        <span class="msg_error">El campo no puede tener más de 255 caracteres</span>
-        } }
+        <app-form-input-error [control]="datosDocumento.get('new_sender_department')!"
+          [errorMessages]="getSenderDepartmentErrorMessages()" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
         }
         @if (!typeText) {
-        <select formControlName="sender_department_id" class="input-form" id="sender_department_id"
-          name="sender_department_id" (change)="SelecttoText($event)">
-          <option value="" disabled selected>Selecciona una opción</option>
-          @for (sd of formData.senders_department; track $index) {
-          <option value="{{ sd.id }}">{{ sd.name }}</option>
+        <div class="department-search-container">
+          <input type="text" class="input-form" placeholder="Buscar departamento..."
+            [value]="getSelectedDepartmentName() || departmentSearchTerm" (input)="onDepartmentSearch($event)"
+            (focus)="onDepartmentSearchFocus()" (blur)="onDepartmentSearchBlur()"
+            [class.is-invalid]="shouldShowSenderDepartmentError()" />
+
+          @if (showDepartmentSearch) {
+          <div class="department-search-dropdown">
+            @if (filteredDepartments.length > 0) {
+            @for (department of filteredDepartments; track department.id) {
+            <div class="department-search-option" (click)="onDepartmentSelect(department)">
+              {{ department.name }}
+            </div>
+            }
+            } @else if (departmentSearchTerm) {
+            <div class="department-search-option no-results">
+              No se encontraron departamentos
+            </div>
+            }
+            <div class="department-search-option new-department-option" (click)="onAddNewDepartment()">
+              <span class="new-department-icon">+</span>
+              Agregar nuevo departamento
+            </div>
+          </div>
           }
-          <option class="newvalue" value="NewDep">Agregar nuevo Departamento</option>
-        </select>
-        @if (datosDocumento.get("sender_department_id")?.invalid &&
-        datosDocumento.get("sender_department_id")?.touched) { @if
-        (datosDocumento.get("sender_department_id")?.hasError("required")) {
-        <span class="msg_error">Campo obligatorio</span>
-        } }
+        </div>
+        <app-form-input-error [control]="datosDocumento.get('sender_department_id')!"
+          [errorMessages]="getSenderDepartmentErrorMessages()" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
         }
       </fieldset>
 
@@ -120,17 +125,17 @@
           }
         </label>
         <select formControlName="receiver_department_id" class="input-form" id="receiver_department_id"
-          name="receiver_department_id" required="">
+          name="receiver_department_id" required="" [class.is-invalid]="datosDocumento.get('receiver_department_id')?.invalid &&
+                            (datosDocumento.get('receiver_department_id')?.touched || formSubmitted)">
           <option value="" disabled selected>Selecciona una opción</option>
           @for (rd of formData.receivers_department; track $index) {
           <option value="{{ rd.id }}">{{ rd.name }}</option>
           }
         </select>
-        @if (datosDocumento.get("receiver_department_id")?.invalid &&
-        datosDocumento.get("receiver_department_id")?.touched) { @if
-        (datosDocumento.get("receiver_department_id")?.hasError("required")) {
-        <span class="msg_error">Campo obligatorio</span>
-        } }
+
+        <app-form-input-error [control]="datosDocumento.get('receiver_department_id')!"
+          [errorMessages]="getErrorMessages('receiver_department_id')" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
       </fieldset>
 
       <!-- Descripción -->
@@ -143,24 +148,23 @@
       <!-- Fecha de Registro -->
       <fieldset class="form-group date_registration">
         <label for="issue_date">Fecha de Elaboración</label>
-        <input formControlName="issue_date" class="input-form" type="date" id="issue_date" name="issue_date" />
-        @if (datosDocumento.get("issue_date")?.invalid &&
-        datosDocumento.get("issue_date")?.touched) { @if
-        (datosDocumento.get("issue_date")?.hasError("required")) {
-        <span class="msg_error">Campo obligatorio</span>
-        } }
+        <input formControlName="issue_date" class="input-form" type="date" id="issue_date" name="issue_date" required=""
+          [class.is-invalid]="datosDocumento.get('issue_date')?.invalid &&
+                            (datosDocumento.get('issue_date')?.touched || formSubmitted)" />
+        <app-form-input-error [control]="datosDocumento.get('issue_date')!"
+          [errorMessages]="getErrorMessages('issue_date')" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
       </fieldset>
 
       <!-- Fecha de Recepción -->
       <fieldset class="form-group date_reecepcion">
         <label for="receivedDate">Fecha de Recepción</label>
         <input formControlName="received_date" class="input-form" type="date" id="receivedDate" name="receivedDate"
-          required="" />
-        @if (datosDocumento.get("received_date")?.invalid &&
-        datosDocumento.get("received_date")?.touched) { @if
-        (datosDocumento.get("received_date")?.hasError("required")) {
-        <span class="msg_error">Campo obligatorio</span>
-        } }
+          [class.is-invalid]="datosDocumento.get('received_date')?.invalid &&
+                            (datosDocumento.get('received_date')?.touched || formSubmitted)" />
+        <app-form-input-error [control]="datosDocumento.get('received_date')!"
+          [errorMessages]="getErrorMessages('received_date')" [showOnSubmit]="formSubmitted">
+        </app-form-input-error>
       </fieldset>
 
       <fieldset class="form-group description">

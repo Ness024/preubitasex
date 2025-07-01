@@ -1,97 +1,99 @@
 <section class="container">
     <div class="form-container">
         <h2>Agregar Nuevo Usuario...</h2>
-        
+
         <form [formGroup]="userForm" (ngSubmit)="onSubmit()">
             <!-- Titulo del Documento -->
             <fieldset class="form-group title">
                 <label for="name">Nombre</label>
-                <input formControlName="name" class="input-form" type="text" id="name" name="name"  maxlength="255" placeholder="Nombre"/>
-                @if (userForm.get("name")?.invalid && userForm.get("name")?.touched) {
-                    @if (userForm.get("name")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("name")?.hasError("maxlength")) {
-                        <span class="msg_error">El nombre no puede tener más de 255 caracteres</span>
-                    }
-                }
+                <input formControlName="name" class="input-form" type="text" id="name" name="name" maxlength="255"
+                    placeholder="Nombre" [class.is-invalid]="userForm.get('name')?.invalid &&
+                            (userForm.get('name')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('name')!" [errorMessages]="getErrorMessages('name')"
+                    [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
 
-             <!-- Username -->
-             <label for="username">Alias (Username)</label>
-             <fieldset class="form-group title">
-                 <input formControlName="username" class="input-form" type="text" id="username" name="username" placeholder="Username" required="">
-                @if (userForm.get("username")?.invalid && userForm.get("name")?.touched) {
-                    @if (userForm.get("username")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("username")?.hasError("maxlength")) {
-                        <span class="msg_error">El Alias no puede tener más de 255 caracteres</span>
-                    }
-                }
-             </fieldset>
+            <!-- Username -->
+            <label for="username">Alias (Username)</label>
+            <fieldset class="form-group title">
+                <input formControlName="username" class="input-form" type="text" id="username" name="username"
+                    placeholder="Username" required="" [class.is-invalid]="userForm.get('username')?.invalid &&
+                            (userForm.get('username')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('username')!"
+                    [errorMessages]="getErrorMessages('username')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+            </fieldset>
 
 
             <label for="password">Contraseña</label>
             <fieldset class="form-group title">
-                <input formControlName="password" class="input-form" type="text" id="password" name="password" placeholder="Contraseña" required="">
-                @if (userForm.get("password")?.invalid && userForm.get("password")?.touched) {
-                    @if (userForm.get("password")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("password")?.hasError("maxlength")) {
-                        <span class="msg_error">La contraseña no puede tener más de 255 caracteres</span>
-                    }
-                }
+                <input formControlName="password" class="input-form" type="text" id="password" name="password"
+                    placeholder="Contraseña" required="" [class.is-invalid]="userForm.get('password')?.invalid &&
+                            (userForm.get('password')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('password')!"
+                    [errorMessages]="getErrorMessages('password')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
 
             <!-- Rol -->
             <fieldset class="form-group title">
                 <label for="role">Rol</label>
-                <select formControlName="role" class="input-form" id="role" name="role" required="">
+                <select formControlName="role" class="input-form" id="role" name="role" required="" [class.is-invalid]="userForm.get('role')?.invalid &&
+                            (userForm.get('role')?.touched || formSubmitted)">
                     <option value="" disabled selected>Selecciona una opción</option>
                     <option value="user">Usuario</option>
                     <option value="admin">Administrador</option>
                 </select>
-                @if (userForm.get("role")?.invalid && userForm.get("role")?.touched) {
-                    @if (userForm.get("role")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                }
+                <app-form-input-error [control]="userForm.get('role')!" [errorMessages]="getErrorMessages('role')"
+                    [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
             <fieldset class="form-group title">
                 <label for="permissions">Permisos</label>
                 <div class="permissions-content">
                     @for (item of permisosKeys; track $index) {
-                  <div class="checkbox-wrapper-16">
-                    <label for="{{item}}" class="checkbox-wrapper">
-                      <input 
-                      name="{{item}}"
-                      id="{{item}}"
-                      [value]="item"
-                      (change)="onCheckboxChange($event)"
-                      type="checkbox"
-                      class="checkbox-input" />
-                      <span class="checkbox-tile">
-                        <span class="checkbox-icon">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="4"><path stroke-linejoin="round" d="M20 10H6a2 2 0 0 0-2 2v26a2 2 0 0 0 2 2h36a2 2 0 0 0 2-2v-2.5"/><path d="M10 23h8m-8 8h24"/><circle cx="34" cy="16" r="6" fill="currentColor" stroke-linejoin="round"/><path stroke-linejoin="round" d="M44 28.419C42.047 24.602 38 22 34 22s-5.993 1.133-8.05 3"/></g></svg>
-                        </span>
-                        <span class="checkbox-label">{{permissionslist[item]}}</span>
-                      </span>
-                    </label>
-                  </div>
-                }
+                    <div class="checkbox-wrapper-16">
+                        <label for="{{item}}" class="checkbox-wrapper">
+                            <input name="{{item}}" id="{{item}}" [value]="item" (change)="onCheckboxChange($event)"
+                                type="checkbox" class="checkbox-input" [class.is-invalid]="userForm.get('permissions')?.invalid &&
+                            (userForm.get('permissions')?.touched || formSubmitted)" />
+                            <span class="checkbox-tile">
+                                <span class="checkbox-icon">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+                                        viewBox="0 0 48 48">
+                                        <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="4">
+                                            <path stroke-linejoin="round"
+                                                d="M20 10H6a2 2 0 0 0-2 2v26a2 2 0 0 0 2 2h36a2 2 0 0 0 2-2v-2.5" />
+                                            <path d="M10 23h8m-8 8h24" />
+                                            <circle cx="34" cy="16" r="6" fill="currentColor" stroke-linejoin="round" />
+                                            <path stroke-linejoin="round"
+                                                d="M44 28.419C42.047 24.602 38 22 34 22s-5.993 1.133-8.05 3" />
+                                        </g>
+                                    </svg>
+                                </span>
+                                <span class="checkbox-label">{{permissionslist[item]}}</span>
+                            </span>
+                        </label>
+                    </div>
+                    }
                 </div>
+                <app-form-input-error [control]="userForm.get('permissions')!"
+                    [errorMessages]="getErrorMessages('permissions')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
 
             <!-- Botón para guardar -->
             <fieldset class="form-group submit" style="display: flex; justify-content: center;">
                 <button type="submit" class="button-24">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24"><path fill="currentColor" d="M14 14.252v2.09A6 6 0 0 0 6 22H4a8 8 0 0 1 10-7.749M12 13c-3.315 0-6-2.685-6-6s2.685-6 6-6s6 2.685 6 6s-2.685 6-6 6m0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m6 6v-3h2v3h3v2h-3v3h-2v-3h-3v-2z"/></svg>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1.5em" height="1.5em" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M14 14.252v2.09A6 6 0 0 0 6 22H4a8 8 0 0 1 10-7.749M12 13c-3.315 0-6-2.685-6-6s2.685-6 6-6s6 2.685 6 6s-2.685 6-6 6m0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4s-4 1.79-4 4s1.79 4 4 4m6 6v-3h2v3h3v2h-3v3h-2v-3h-3v-2z" />
+                    </svg>
                     Agregar nuevo usuario
                 </button>
             </fieldset>
-            
+
 
         </form>
     </div>

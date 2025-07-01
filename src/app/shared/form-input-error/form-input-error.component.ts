@@ -8,7 +8,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
   imports: [
     CommonModule
   ],
-   template: `
+  template: `
     @if (showErrors) {
       <div class="error-messages" @errorAnimation>
         @for (error of activeErrors; track error) {
@@ -34,7 +34,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     top: 100%;
     left: 0;
     right: 0;
-    z-index: 10;
+    z-index: 1;
     
   }
 
@@ -70,24 +70,24 @@ import { animate, style, transition, trigger } from '@angular/animations';
     flex-shrink: 0;
   }
 `],
-animations: [
-  trigger('errorAnimation', [
-    transition(':enter', [
-      style({ opacity: 0, transform: 'translateY(-5px)' }),
-      animate('200ms ease-out',
-        style({ opacity: 1, transform: 'translateY(0)' }))
-    ]),
-    transition(':leave', [
-      animate('150ms ease-in',
-        style({ opacity: 0, transform: 'translateY(-5px)' }))
+  animations: [
+    trigger('errorAnimation', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-5px)' }),
+        animate('200ms ease-out',
+          style({ opacity: 1, transform: 'translateY(0)' }))
+      ]),
+      transition(':leave', [
+        animate('150ms ease-in',
+          style({ opacity: 0, transform: 'translateY(-5px)' }))
+      ])
     ])
-  ])
-]
+  ]
 })
 export class FormInputErrorComponent {
   @Input({ required: true }) control!: AbstractControl;
-@Input() errorMessages: Record<string, string> = {};
-@Input() showOnSubmit = false;
+  @Input() errorMessages: Record<string, string> = {};
+  @Input() showOnSubmit = false;
 
   private defaultErrorMessages: Record<string, string> = {
     required: 'Este campo es requerido',
@@ -101,17 +101,23 @@ export class FormInputErrorComponent {
 
   get showErrors(): boolean {
     if (!this.control) return false;
-    return (this.control.dirty || this.control.touched || this.showOnSubmit) &&
-           this.control.invalid;
+    
+    // Solo mostrar errores si:
+    // 1. El formulario se ha intentado enviar (showOnSubmit = true)
+    // 2. O si el campo está dirty (ha sido modificado) Y touched (ha sido tocado) Y es inválido
+    // 3. O si el campo está touched Y es inválido Y el usuario ha interactuado significativamente
+    return (this.showOnSubmit && this.control.invalid) ||
+           (this.control.dirty && this.control.touched && this.control.invalid) ||
+           (this.control.touched && this.control.invalid && this.control.value !== '' && this.control.value !== null);
   }
 
   get activeErrors(): string[] {
     return Object.keys(this.control.errors || {});
   }
 
-getMessage(errorType: string): string {
-  return this.errorMessages[errorType] ||
-         this.defaultErrorMessages[errorType] ||
-         `Error de validación (${errorType})`;
-}
+  getMessage(errorType: string): string {
+    return this.errorMessages[errorType] ||
+      this.defaultErrorMessages[errorType] ||
+      `Error de validación (${errorType})`;
+  }
 }
