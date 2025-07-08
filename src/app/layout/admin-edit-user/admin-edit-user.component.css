@@ -142,3 +142,78 @@ fieldset {
         margin: 0;
     }
 }
+
+/* Estilos para la grilla de permisos */
+.permissions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 10px;
+    padding: 15px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    border: 1px solid #e9ecef;
+}
+
+.permissions-grid .checkbox {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    background-color: white;
+    border-radius: 6px;
+    border: 1px solid #dee2e6;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.permissions-grid .checkbox:hover {
+    background-color: #e9ecef;
+    border-color: #adb5bd;
+}
+
+.permissions-grid .checkbox input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.permissions-grid .checkbox input[type="checkbox"]:checked + span {
+    font-weight: 600;
+    color: var(--color-theme-blue);
+}
+
+/* Estilos para botón de submit */
+.btnsubmit {
+    background-color: var(--color-theme-blue);
+    color: white;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    width: 100%;
+}
+
+.btnsubmit:hover {
+    background-color: var(--color-theme-light-blue);
+}
+
+.btnsubmit:disabled {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+/* Estilos para campos inválidos */
+.is-invalid {
+    border-color: #dc3545 !important;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}
+
+.is-invalid:focus {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 0.2rem rgba(220, 53, 69, 0.25);
+}

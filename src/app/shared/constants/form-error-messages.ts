@@ -92,7 +92,8 @@ export const FORM_ERROR_MESSAGES = {
     username: {
         required: 'El nombre de usuario es obligatorio',
         maxlength: 'El nombre de usuario no puede tener más de 30 caracteres',
-        minlength: 'El nombre de usuario debe tener al menos 5 caracteres'
+        minlength: 'El nombre de usuario debe tener al menos 5 caracteres',
+        unique: 'El usuario ya existe'
     },
     password: {
         required: 'La contraseña es obligatoria',
@@ -120,5 +121,9 @@ export const FORM_ERROR_MESSAGES = {
         maxlength: 'La contraseña nueva no puede tener más de 30 caracteres',
         minlength: 'La contraseña nueva debe tener al menos 8 caracteres',
         mismatch: 'Las contraseñas no coinciden'
+    },
+    admin_password: {
+        required: 'La contraseña de administrador es obligatoria',
+        admin_password: 'La contraseña de admin es incorrecta'
     }
 }

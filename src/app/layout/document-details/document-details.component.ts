@@ -17,6 +17,7 @@ import { DocComponent } from "../../icons/doc/doc.component";
 import { XlsxComponent } from "../../icons/xlsx/xlsx.component";
 import { UdaService } from '../../service/uda.service';
 import { ChangestatusComponent } from "../changestatus/changestatus.component";
+
 export interface usuario {
   id: number;
   name: string;
@@ -303,7 +304,12 @@ export class DocumentDetailsComponent {
     if (this.idDoc) {
       this.dataService.getDocumentbyId(this.idDoc).subscribe({
         next: (response) => {
-          this.coments = response.comments.map((c: any) => ({ ...c, id: Number(c.id) }));
+          this.coments = (response.comments as any[]).map((c: any): Comment => ({
+            ...c,
+            id: Number(c.id),
+            created_at: this.time.getRelativeTime(c.created_at),
+            updated_at: c.updated_at ? this.time.getRelativeTime(c.updated_at) : null,
+          }));
         }
       });
     }

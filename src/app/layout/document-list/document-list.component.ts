@@ -1,14 +1,14 @@
-import {Component, HostListener, ElementRef, viewChild, ViewChild, EventEmitter, Output} from '@angular/core';
+import { Component, HostListener, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { TableRComponent } from "../table-r/table-r.component";
 import { ExcelExportService } from '../../service/excel-export.service';
 import { MatMenuModule } from '@angular/material/menu';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { DataService } from '../../service/data.service';
 
-export interface categorys{
+export interface categorys {
   id: number,
   name: string
 }
@@ -20,15 +20,14 @@ export interface categorys{
   styleUrl: './document-list.component.css'
 })
 
-
-export class DocumentListComponent{
+export class DocumentListComponent {
 
   filtersform = new FormGroup({
     category_id: new FormControl<string>(''),
     start_date: new FormControl<string>(''),
     end_date: new FormControl<string>('')
   });
-  categorys: categorys[]=[];
+  categorys: categorys[] = [];
   isOpen = false;
   buttonText = 'Menu';
   statusId: number = 0;
@@ -36,8 +35,8 @@ export class DocumentListComponent{
     private excelExportService: ExcelExportService,
     private elementRef: ElementRef,
     private dataService: DataService
-  ) {}
-  
+  ) { }
+
   @ViewChild('dropdownContainer') dropdownContainer!: ElementRef;
 
   toggleDropdown(event: MouseEvent): void {
@@ -46,10 +45,10 @@ export class DocumentListComponent{
   }
 
 
-  ngOnInit(){
+  ngOnInit() {
     this.dataService.getmetadata().subscribe({
-      next: (next) =>{
-        this.categorys=next.categories;
+      next: (next) => {
+        this.categorys = next.categories;
         console.log(next)
       }
     })
@@ -70,7 +69,7 @@ export class DocumentListComponent{
   onExportClick() {
     this.excelExportService.requestExport();
   }
-  setid(number: number){
+  setid(number: number) {
     this.statusId = number;
   }
 
