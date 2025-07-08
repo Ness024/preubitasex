@@ -107,10 +107,10 @@ export class EditMyUserComponent {
           }
         },
         error: (error) => {
-          if (error.status === 422) {
-            this.notificationService.showError(error?.error?.error || 'Error al actualizar el usuario', 'Error');
+          if (error.status === 422 && error.error?.errors) {
+            this.handleBackendValidationErrors(error.error.errors);
           } else {
-            this.notificationService.showError(error?.error || 'Error al actualizar el usuario', 'Error');
+            this.notificationService.showError(error?.error?.error || error?.error || 'Error al actualizar el usuario', 'Error');
           }
         },
       });
@@ -185,6 +185,47 @@ export class EditMyUserComponent {
 
       return null;
     };
+  }
+
+  private handleBackendValidationErrors(errors: any) {
+    // Limpiar errores previos
+    Object.keys(this.profileForm.controls).forEach(key => {
+      const control = this.profileForm.get(key);
+      if (control) {
+        control.setErrors(null);
+      }
+    });
+
+    // Aplicar errores del backend
+    Object.keys(errors).forEach(fieldName => {
+      const control = this.profileForm.get(fieldName);
+      if (control) {
+        const errorMessages = errors[fieldName];
+        const errorKey = this.getErrorKey(errorMessages[0]);
+        control.setErrors({ [errorKey]: true });
+        
+        // Agregar el mensaje personalizado al control
+        if (errorKey === 'unique' && fieldName === 'username') {
+          control.setErrors({ unique: 'El usuario ya existe' });
+        }
+      }
+    });
+  }
+
+  private getErrorKey(errorMessage: string): string {
+    if (errorMessage.includes('ya existe') || errorMessage.includes('ya está en uso')) {
+      return 'unique';
+    }
+    if (errorMessage.includes('obligatorio') || errorMessage.includes('requerido')) {
+      return 'required';
+    }
+    if (errorMessage.includes('máximo') || errorMessage.includes('max')) {
+      return 'maxlength';
+    }
+    if (errorMessage.includes('mínimo') || errorMessage.includes('min')) {
+      return 'minlength';
+    }
+    return 'custom';
   }
 
 }

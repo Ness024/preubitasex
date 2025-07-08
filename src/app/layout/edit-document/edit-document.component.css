@@ -371,3 +371,130 @@ li{
     background: #FF4742;
     border: 1px solid #FF4742;
 }
+
+/* Estilos para el buscador de departamentos */
+.department-search-container {
+    position: relative;
+    width: 100%;
+}
+
+.department-search-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid light-dark(rgb(118, 118, 118), rgb(133, 133, 133));
+    margin-top: 5px;
+    max-height: 250px;
+    overflow-y: auto;
+    z-index: 1000;
+    color: #718EBF;
+}
+
+.department-search-option {
+    padding: 5px 15px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Inter', Courier, monospace;
+    font-size: 13px;
+    font-weight: 400;
+    border: none;
+}
+
+.department-search-option:hover {
+    background-color: #808080;
+    color: #fff;
+}
+
+.department-search-option.new-department-option {
+    background-color: #e3f2fd;
+    font-weight: 400;
+    color: #1976d2;
+    border-top: 1px solid #bbdefb;
+}
+
+.department-search-option.new-department-option:hover {
+    background-color: #bbdefb;
+}
+
+.department-search-option.no-results {
+    color: #6c757d;
+    font-style: normal;
+    font-weight: lighter;
+    cursor: default;
+    background-color: #f8f9fa;
+}
+
+.department-search-option.no-results:hover {
+    background-color: #f8f9fa;
+}
+
+.department-search-option:last-child {
+    border-bottom: none;
+}
+
+.new-department-icon {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.is-invalid {
+    border-color: #dc3545 !important;
+}
+
+.status-badge {
+    font-size: 0.75rem;
+    color: #6b7280;
+    font-weight: 400;
+    margin-left: 8px;
+    background-color: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #e5e7eb;
+}
+
+/* Estilos para formulario deshabilitado por permisos */
+.disabled-form {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+.disabled-form input,
+.disabled-form select,
+.disabled-form textarea {
+    background-color: #f8f9fa;
+    cursor: not-allowed;
+}
+
+.disabled-form .btnsubmit {
+    background-color: #6c757d;
+    cursor: not-allowed;
+}
+
+.disabled-form .btnsubmit:hover {
+    background-color: #6c757d;
+}
+
+/* Estilos para el mensaje de advertencia de permisos */
+.permission-warning {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #ffeaa7;
+    color: #856404;
+    padding: 12px 16px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.permission-warning svg {
+    color: #f39c12;
+    flex-shrink: 0;
+}

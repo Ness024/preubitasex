@@ -59,7 +59,7 @@ export class ChangestatusComponent implements OnChanges {
   @Output() closed = new EventEmitter<void>();
   @Input() documentId!: string;
   @Input() sendStatusId!: number;
-
+  @Input() reference_number!: string;
 
   currentStatusId = '';
   departments: any[] = [];

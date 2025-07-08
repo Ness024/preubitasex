@@ -3,110 +3,86 @@
         <h2>Editar usuario {{user.name}}</h2>
         
         <form [formGroup]="userForm" (ngSubmit)="onSubmit()">           
-            <!-- Titulo del Documento -->
+            <!-- Nombre -->
             <fieldset class="form-group title">
                 <label for="name">Nombre</label>
-                <input formControlName="name" class="input-form" type="text" id="name" name="name"  maxlength="255" placeholder="Nombre"/>
-                @if (userForm.get("name")?.invalid && userForm.get("name")?.touched) {
-                    @if (userForm.get("name")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("name")?.hasError("maxlength")) {
-                        <span class="msg_error">El nombre no puede tener más de 255 caracteres</span>
-                    }
-                }
+                <input formControlName="name" class="input-form" type="text" id="name" name="name" maxlength="255" placeholder="Nombre"
+                    [class.is-invalid]="userForm.get('name')?.invalid && (userForm.get('name')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('name')!" [errorMessages]="getErrorMessages('name')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
 
-             <!-- Username -->
-             <label for="username">Alias (Username)</label>
-             <fieldset class="form-group title">
-                 <input formControlName="username" class="input-form" type="text" id="username" name="username" placeholder="Username" required="">
-                @if (userForm.get("username")?.invalid && userForm.get("name")?.touched) {
-                    @if (userForm.get("username")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("username")?.hasError("maxlength")) {
-                        <span class="msg_error">El Alias no puede tener más de 255 caracteres</span>
-                    }
-                }
-             </fieldset>
-
-
-            <label for="new_password">Nueva contraseña</label>
+            <!-- Username -->
             <fieldset class="form-group title">
-                <input formControlName="new_password" class="input-form" type="password" id="new_password" name="new_password" placeholder="Nueva contraseña" required="">
-                @if (userForm.get("new_password")?.invalid && userForm.get("new_password")?.touched) {
-                    @if (userForm.get("new_password")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("new_password")?.hasError("maxlength")) {
-                        <span class="msg_error">La contraseña no puede tener más de 255 caracteres</span>
-                    }
-                }
-            </fieldset>
-            <!-- Contraseña -->
-            <label for="new_password_confirmation">Confirmar contraseña</label>
-            <fieldset class="form-group title">
-                <input formControlName="new_password_confirmation" class="input-form" type="password" id="new_password_confirmation" name="new_password_confirmation" placeholder="Confirmacion" required="">
-                @if (userForm.get("new_password_confirmation")?.invalid && userForm.get("new_password_confirmation")?.touched) {
-                    @if (userForm.get("new_password_confirmation")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("new_password_confirmation")?.hasError("maxlength")) {
-                        <span class="msg_error">La contraseña no puede tener más de 255 caracteres</span>
-                    }
-                }
+                <label for="username">Alias (Username)</label>
+                <input formControlName="username" class="input-form" type="text" id="username" name="username" placeholder="Username"
+                    [class.is-invalid]="userForm.get('username')?.invalid && (userForm.get('username')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('username')!" [errorMessages]="getErrorMessages('username')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
 
-            <!-- Admin Password -->
-             <label for="admin_password">Confirmar contraseña</label>
+            <!-- Nueva contraseña -->
             <fieldset class="form-group title">
-                <input formControlName="admin_password" class="input-form" type="password" id="admin_password" name="admin_password" placeholder="Confirmacion" required="">
-                @if (userForm.get("admin_password")?.invalid && userForm.get("admin_password")?.touched) {
-                    @if (userForm.get("admin_password")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("admin_password")?.hasError("maxlength")) {
-                        <span class="msg_error">La contraseña no puede tener más de 255 caracteres</span>
-                    }
-                }
+                <label for="new_password">Nueva contraseña</label>
+                <input formControlName="new_password" class="input-form" type="password" id="new_password" name="new_password" placeholder="Nueva contraseña" />
+                <app-form-input-error [control]="userForm.get('new_password')!" [errorMessages]="getErrorMessages('new_password')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
+
+            <!-- Confirmar contraseña -->
+            <fieldset class="form-group title">
+                <label for="new_password_confirmation">Confirmar contraseña</label>
+                <input formControlName="new_password_confirmation" class="input-form" type="password" id="new_password_confirmation" name="new_password_confirmation" placeholder="Confirmación" />
+                <app-form-input-error [control]="userForm.get('new_password_confirmation')!" [errorMessages]="getErrorMessages('new_password_confirmation')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+            </fieldset>
+
+            <!-- Contraseña de administrador -->
+            <fieldset class="form-group title">
+                <label for="admin_password">Contraseña de administrador</label>
+                <input formControlName="admin_password" class="input-form" type="password" id="admin_password" name="admin_password" placeholder="Contraseña de administrador" />
+                <app-form-input-error [control]="userForm.get('admin_password')!" [errorMessages]="getErrorMessages('admin_password')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+            </fieldset>
+
             <!-- Rol -->
             <fieldset class="form-group title">
                 <label for="role">Rol</label>
-                <select formControlName="role" class="input-form" id="role" name="role" required="">
+                <select formControlName="role" class="input-form" id="role" name="role"
+                    [class.is-invalid]="userForm.get('role')?.invalid && (userForm.get('role')?.touched || formSubmitted)">
                     <option value="" disabled>Selecciona una opción</option>
-                    <option value="user" >Usuario</option>
+                    <option value="user">Usuario</option>
                     <option value="admin">Administrador</option>
                 </select>
-                @if (userForm.get("role")?.invalid && userForm.get("role")?.touched) {
-                    @if (userForm.get("role")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                }
+                <app-form-input-error [control]="userForm.get('role')!" [errorMessages]="getErrorMessages('role')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
+
+            <!-- Permisos -->
             <fieldset class="form-group title">
                 <label for="permissions">Permisos</label>
-                @for (item of ['create', 'read', 'update', 'delete']; track $index) {
-                    <label for="{{item}}" class="checkbox">
-                    <input 
-                        name="{{item}}"
-                        id="{{item}}"
-                        type="checkbox" 
-                        [value]="item"
-                        (change)="onCheckboxChange($event)"
-                    />
-                    {{ item }}
-                    </label>
-                }
+                <div class="permissions-grid">
+                    @for (item of ['create', 'read', 'update', 'delete']; track $index) {
+                        <label for="{{item}}" class="checkbox">
+                            <input 
+                                name="{{item}}"
+                                id="{{item}}"
+                                type="checkbox" 
+                                [value]="item"
+                                (change)="onCheckboxChange($event)"
+                            />
+                            {{ item }}
+                        </label>
+                    }
+                </div>
+                <app-form-input-error [control]="userForm.get('permissions')!" [errorMessages]="getErrorMessages('permissions')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
             </fieldset>
 
             <!-- Botón para guardar -->
             <fieldset class="form-group submit">
-                <button type="submit" >Guardar Documento</button>
+                <button type="submit" class="btnsubmit">Guardar Cambios</button>
             </fieldset>
-            
-
         </form>
     </div>
 </section>

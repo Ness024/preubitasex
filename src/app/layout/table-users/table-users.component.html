@@ -5,7 +5,7 @@
       <ng-container matColumnDef="Nombre">
         <th mat-header-cell *matHeaderCellDef>NOMBRE</th>
         <td mat-cell *matCellDef="let user">
-            {{ user.name }}
+          {{ user.name }}
 
         </td>
       </ng-container>
@@ -22,32 +22,14 @@
         <td mat-cell *matCellDef="let element">
           <div class="btns-container">
             <button class="editbtn btn" (click)="getUserData(element.id)">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="2em"
-                height="2em"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M1 23v-5h2v3h3v2zm17 0v-2h3v-3h2v5zm-6-4.5q-3 0-5.437-1.775T3 12q1.125-2.95 3.563-4.725T12 5.5t5.438 1.775T21 12q-1.125 2.95-3.562 4.725T12 18.5m0-2q2.2 0 4.025-1.2t2.8-3.3q-.975-2.1-2.8-3.3T12 7.5T7.975 8.7t-2.8 3.3q.975 2.1 2.8 3.3T12 16.5m0-1q1.45 0 2.475-1.025T15.5 12t-1.025-2.475T12 8.5T9.525 9.525T8.5 12t1.025 2.475T12 15.5m0-2q-.625 0-1.063-.437T10.5 12t.438-1.062T12 10.5t1.063.438T13.5 12t-.437 1.063T12 13.5M1 6V1h5v2H3v3zm20 0V3h-3V1h5v5zm-9 6"
-                />
+              <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                <path fill="currentColor"
+                  d="M1 23v-5h2v3h3v2zm17 0v-2h3v-3h2v5zm-6-4.5q-3 0-5.437-1.775T3 12q1.125-2.95 3.563-4.725T12 5.5t5.438 1.775T21 12q-1.125 2.95-3.562 4.725T12 18.5m0-2q2.2 0 4.025-1.2t2.8-3.3q-.975-2.1-2.8-3.3T12 7.5T7.975 8.7t-2.8 3.3q.975 2.1 2.8 3.3T12 16.5m0-1q1.45 0 2.475-1.025T15.5 12t-1.025-2.475T12 8.5T9.525 9.525T8.5 12t1.025 2.475T12 15.5m0-2q-.625 0-1.063-.437T10.5 12t.438-1.062T12 10.5t1.063.438T13.5 12t-.437 1.063T12 13.5M1 6V1h5v2H3v3zm20 0V3h-3V1h5v5zm-9 6" />
               </svg>
             </button>
-            <button
-              class="deletebtn btn"
-              (click)="openDialog(element.id, element.name)"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="2em"
-                height="2em"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  fill="currentColor"
-                  d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"
-                />
+            <button class="deletebtn btn" (click)="openDialog(element.id, element.name)">
+              <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z" />
               </svg>
             </button>
           </div>
@@ -57,183 +39,181 @@
       <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
       <tr mat-row *matRowDef="let row; columns: columnsToDisplay"></tr>
     </table>
-    <mat-paginator
-      [pageSizeOptions]="[15]"
-      showFirstLastButtons
-    ></mat-paginator>
+    <mat-paginator [pageSizeOptions]="[15]" showFirstLastButtons></mat-paginator>
   </div>
-  } 
-  @if(profile){
-    <div [@openClose]="isOpen ? 'open' : 'closed'" class="border-container">
-      @if(profile && userisedit === false){
-      <div class="document-details">
-        <div class="document-header">
-          <h2>{{profile.name}}</h2>
-        </div>
-        <div class="info-card">
-          <h4>Nombre de Usuario</h4>
-          <p>{{profile.username}}</p>
-        </div>
-        <div class="info-card">
-          <h4>Rol</h4>
-          <p>{{profile.roles}}</p>
-        </div>
-        <div class="info-grid">
-          <div class="info-card">
-            <h4>Departamento</h4>
-            <p>{{profile.department.name}}</p>
-          </div>
-          <div class="info-card">
-            <h4>Permisos:</h4>
-            @for (permiso of profile.permissions; track $index) {
-              <p>{{traducirPermiso(permiso)}}</p>
-            }
-          </div>
-        </div>
-        <div class="button-container">
-          <button (click)="editUser(profile.id)" class="button-24" role="button">
-          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M10.5 22H6.59c-1.545 0-2.774-.752-3.877-1.803c-2.26-2.153 1.45-3.873 2.865-4.715c2.55-1.52 5.628-1.87 8.422-1.054M16.5 6.5a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m1.933 7.349c.335-.364.503-.546.681-.652a1.4 1.4 0 0 1 1.397-.02c.18.1.354.277.7.63c.345.353.518.53.616.714c.238.447.23.988-.02 1.427c-.104.182-.282.353-.638.696l-4.231 4.075c-.674.65-1.011.974-1.432 1.139c-.421.164-.885.152-1.81.128l-.127-.003c-.282-.008-.422-.012-.504-.105s-.071-.236-.049-.523l.012-.156c.063-.808.095-1.213.253-1.576c.157-.363.43-.658.974-1.248z" color="currentColor"/></svg>
-        </button>
-        </div>
-        </div>
-      }
-      @else if (profile && userisedit === true) {
-      <div class="form-details">
-        <form [formGroup]="userForm" [@openClose]="isOpen ? 'open' : 'closed'" (ngSubmit)="onSubmit(profile.id)">
-          <button type="button" class="return-btn" (click)="returnUserData()">
-            <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="m6.8 13l2.9 2.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-4.6-4.6q-.15-.15-.213-.325T3.426 12t.063-.375t.212-.325l4.6-4.6q.275-.275.7-.275t.7.275t.275.7t-.275.7L6.8 11H19V8q0-.425.288-.712T20 7t.713.288T21 8v3q0 .825-.587 1.413T19 13z"/></svg>
-          </button>
-          <fieldset class="form-group title">
-                <label for="name">Nombre</label>
-                <input formControlName="name" class="input-form" type="text" id="name" name="name"  maxlength="255" placeholder="Nombre"/>
-                @if (userForm.get("name")?.invalid && userForm.get("name")?.touched) {
-                    @if (userForm.get("name")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("name")?.hasError("maxlength")) {
-                        <span class="msg_error">El nombre no puede tener más de 255 caracteres</span>
-                    }
-                }
-            </fieldset>
-
-             <!-- Username -->
-             <fieldset class="form-group title">
-               <label for="username">Alias (Username)</label>
-                 <input formControlName="username" class="input-form" type="text" id="username" name="username" placeholder="Username" required="">
-                @if (userForm.get("username")?.invalid && userForm.get("username")?.touched) {
-                    @if (userForm.get("username")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                    @if (userForm.get("username")?.hasError("maxlength")) {
-                        <span class="msg_error">El Alias no puede tener más de 255 caracteres</span>
-                    }
-                }
-             </fieldset>
-
-             <!-- Nueva contraseña -->
-<fieldset class="form-group title">
-  <label for="new_password">Nueva contraseña</label>
-  <input
-    formControlName="new_password"
-    class="input-form"
-    type="password"
-    id="new_password"
-    name="new_password"
-    placeholder="Nueva contraseña"
-  />
-  @if (userForm.get("new_password")?.invalid && userForm.get("new_password")?.touched) {
-    @if (userForm.get("new_password")?.hasError("maxlength")) {
-      <span class="msg_error">La contraseña no puede tener más de 255 caracteres</span>
-    }
   }
-</fieldset>
-
-
-@if (userForm.get("new_password")?.dirty && userForm.get("new_password")?.value) {
-  <!-- Confirmar contraseña nueva -->
-  <fieldset class="form-group title">
-    <label for="new_password_confirmation">Confirmar contraseña nueva</label>
-    <input
-      formControlName="new_password_confirmation"
-      class="input-form"
-      type="password"
-      id="new_password_confirmation"
-      name="new_password_confirmation"
-      placeholder="Confirmación"
-    />
-    @if (userForm.get("new_password_confirmation")?.invalid && userForm.get("new_password_confirmation")?.touched) {
-      @if (userForm.get("new_password_confirmation")?.hasError("maxlength")) {
-        <span class="msg_error">La contraseña no puede tener más de 255 caracteres</span>
-      }
-    }
-  </fieldset>
-
-  <!-- Contraseña Administrador -->
-  <fieldset class="form-group title">
-    <label for="admin_password">Contraseña Administrador</label>
-    <input
-      formControlName="admin_password"
-      class="input-form"
-      type="password"
-      id="admin_password"
-      name="admin_password"
-      placeholder="Contraseña de administrador"
-    />
-    @if (userForm.get("admin_password")?.invalid && userForm.get("admin_password")?.touched) {
-      @if (userForm.get("admin_password")?.hasError("maxlength")) {
-        <span class="msg_error">La contraseña no puede tener más de 255 caracteres</span>
-      }
-    }
-  </fieldset>
-}
-
-            <!-- Rol -->
-            <fieldset class="form-group title">
-                <label for="role">Rol</label>
-                <select formControlName="role" class="input-form" id="role" name="role" required="">
-                    <option value="" disabled>Selecciona una opción</option>
-                    <option value="user" >Usuario</option>
-                    <option value="admin">Administrador</option>
-                </select>
-                @if (userForm.get("role")?.invalid && userForm.get("role")?.touched) {
-                    @if (userForm.get("role")?.hasError("required")) {
-                        <span class="msg_error">Campo obligatorio</span>
-                    }
-                }
-            </fieldset>
-            <fieldset class="form-group ">
-              <label for="permissions">Permisos</label>
-                <div class="fieldsetcheckbox">
-                  @for (item of permisosKeys; track $index) {
-                  <div class="checkbox-wrapper-16">
-                    <label for="{{item}}" class="checkbox-wrapper">
-                      <input 
-                      [checked]="isChecked(item)"
-                      name="{{item}}"
-                      id="{{item}}"
-                      [value]="item"
-                      (change)="onCheckboxChange($event)"
-                      type="checkbox"
-                      class="checkbox-input" />
-                      <span class="checkbox-tile">
-                        <span class="checkbox-icon">
-                          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="4"><path stroke-linejoin="round" d="M20 10H6a2 2 0 0 0-2 2v26a2 2 0 0 0 2 2h36a2 2 0 0 0 2-2v-2.5"/><path d="M10 23h8m-8 8h24"/><circle cx="34" cy="16" r="6" fill="currentColor" stroke-linejoin="round"/><path stroke-linejoin="round" d="M44 28.419C42.047 24.602 38 22 34 22s-5.993 1.133-8.05 3"/></g></svg>
-                        </span>
-                        <span class="checkbox-label">{{permissionslist[item]}}</span>
-                      </span>
-                    </label>
-                  </div>
-                }
-                </div>
-            </fieldset>
-
-            <!-- Botón para guardar -->
-            <fieldset class="save-btn">
-                <button type="submit" class="button-24"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.828a2 2 0 0 0-.586-1.414l-1.828-1.828A2 2 0 0 0 16.172 4H15M8 4v4a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V4M8 4h7M7 17v-3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3"/></svg></button>
-            </fieldset>
-        </form>
+  @if(profile){
+  <div [@openClose]="isOpen ? 'open' : 'closed'" class="border-container">
+    @if(profile && userisedit === false){
+    <div class="document-details">
+      <div class="document-header">
+        <h2>{{profile.name}}</h2>
       </div>
-      }
+      <div class="info-card">
+        <h4>Nombre de Usuario</h4>
+        <p>{{profile.username}}</p>
+      </div>
+      <div class="info-card">
+        <h4>Rol</h4>
+        <p>{{profile.roles}}</p>
+      </div>
+      <div class="info-grid">
+        <div class="info-card">
+          <h4>Departamento</h4>
+          <p>{{profile.department.name}}</p>
+        </div>
+        <div class="info-card">
+          <h4>Permisos:</h4>
+          @for (permiso of profile.permissions; track $index) {
+          <p>{{traducirPermiso(permiso)}}</p>
+          }
+        </div>
+      </div>
+      <div class="button-container">
+        <button (click)="editUser(profile.id)" class="button-24" role="button">
+          <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 24 24">
+            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
+              d="M10.5 22H6.59c-1.545 0-2.774-.752-3.877-1.803c-2.26-2.153 1.45-3.873 2.865-4.715c2.55-1.52 5.628-1.87 8.422-1.054M16.5 6.5a4.5 4.5 0 1 1-9 0a4.5 4.5 0 0 1 9 0m1.933 7.349c.335-.364.503-.546.681-.652a1.4 1.4 0 0 1 1.397-.02c.18.1.354.277.7.63c.345.353.518.53.616.714c.238.447.23.988-.02 1.427c-.104.182-.282.353-.638.696l-4.231 4.075c-.674.65-1.011.974-1.432 1.139c-.421.164-.885.152-1.81.128l-.127-.003c-.282-.008-.422-.012-.504-.105s-.071-.236-.049-.523l.012-.156c.063-.808.095-1.213.253-1.576c.157-.363.43-.658.974-1.248z"
+              color="currentColor" />
+          </svg>
+        </button>
+      </div>
     </div>
+    }
+    @else if (profile && userisedit === true) {
+    <div class="form-details">
+      <form [formGroup]="userForm" [@openClose]="isOpen ? 'open' : 'closed'" (ngSubmit)="onSubmit(profile.id)">
+        <button type="button" class="return-btn" (click)="returnUserData()">
+          <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+            <path fill="currentColor"
+              d="m6.8 13l2.9 2.9q.275.275.275.7t-.275.7t-.7.275t-.7-.275l-4.6-4.6q-.15-.15-.213-.325T3.426 12t.063-.375t.212-.325l4.6-4.6q.275-.275.7-.275t.7.275t.275.7t-.275.7L6.8 11H19V8q0-.425.288-.712T20 7t.713.288T21 8v3q0 .825-.587 1.413T19 13z" />
+          </svg>
+        </button>
+        <fieldset class="form-group title">
+          <label for="name">Nombre</label>
+          <input formControlName="name" class="input-form" type="text" id="name" name="name" maxlength="255"
+            placeholder="Nombre"
+            [class.is-invalid]="userForm.get('name')?.invalid &&
+                            (userForm.get('name')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('name')!"
+                    [errorMessages]="getErrorMessages('name')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+
+        <!-- Username -->
+        <fieldset class="form-group title">
+          <label for="username">Alias (Username)</label>
+          <input formControlName="username" class="input-form" type="text" id="username" name="username"
+            placeholder="Username" required=""
+            [class.is-invalid]="userForm.get('username')?.invalid &&
+                            (userForm.get('username')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('username')!"
+                    [errorMessages]="getErrorMessages('username')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+
+        <!-- Nueva contraseña -->
+        <fieldset class="form-group title">
+          <label for="new_password">Nueva contraseña</label>
+          <input formControlName="new_password" class="input-form" type="password" id="new_password" name="new_password"
+            placeholder="Nueva contraseña"
+            [class.is-invalid]="userForm.get('new_password')?.invalid &&
+                            (userForm.get('new_password')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('new_password')!"
+                    [errorMessages]="getErrorMessages('new_password')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+
+
+        @if (userForm.get("new_password")?.dirty && userForm.get("new_password")?.value) {
+        <!-- Confirmar contraseña nueva -->
+        <fieldset class="form-group title">
+          <label for="new_password_confirmation">Confirmar contraseña nueva</label>
+          <input formControlName="new_password_confirmation" class="input-form" type="password"
+            id="new_password_confirmation" name="new_password_confirmation" placeholder="Confirmación"
+            [class.is-invalid]="userForm.get('new_password_confirmation')?.invalid &&
+                            (userForm.get('new_password_confirmation')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('new_password_confirmation')!"
+                    [errorMessages]="getErrorMessages('new_password_confirmation')" 
+                    [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+
+        <!-- Contraseña Administrador -->
+        <fieldset class="form-group title">
+          <label for="admin_password">Contraseña Administrador</label>
+          <input formControlName="admin_password" class="input-form" type="password" id="admin_password"
+            name="admin_password" placeholder="Contraseña de administrador"
+            [class.is-invalid]="userForm.get('admin_password')?.invalid &&
+                            (userForm.get('admin_password')?.touched || formSubmitted)" />
+                <app-form-input-error [control]="userForm.get('admin_password')!"
+                    [errorMessages]="getErrorMessages('admin_password')" 
+                    [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+        }
+
+        <!-- Rol -->
+        <!--
+        <fieldset class="form-group title">
+          <label for="role">Rol</label>
+          <select formControlName="role" class="input-form" id="role" name="role" required=""
+          [class.is-invalid]="userForm.get('role')?.invalid &&
+            (userForm.get('role')?.touched || formSubmitted)" >
+            <option value="" disabled>Selecciona una opción</option>
+            <option value="user">Usuario</option>
+            <option value="admin">Administrador</option>
+            </select>
+                <app-form-input-error [control]="userForm.get('role')!"
+                    [errorMessages]="getErrorMessages('role')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+        -->
+        
+        <fieldset class="form-group ">
+          <label for="permissions">Permisos</label>
+          <div class="fieldsetcheckbox">
+            @for (item of permisosKeys; track $index) {
+            <div class="checkbox-wrapper-16">
+              <label for="{{item}}" class="checkbox-wrapper">
+                <input [checked]="isChecked(item)" name="{{item}}" id="{{item}}" [value]="item"
+                  (change)="onCheckboxChange($event)" type="checkbox" class="checkbox-input" 
+                  [class.is-invalid]="userForm.get('permissions')?.invalid &&
+                            (userForm.get('permissions')?.touched || formSubmitted)" />
+                <span class="checkbox-tile">
+                  <span class="checkbox-icon">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 48 48">
+                      <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="4">
+                        <path stroke-linejoin="round"
+                          d="M20 10H6a2 2 0 0 0-2 2v26a2 2 0 0 0 2 2h36a2 2 0 0 0 2-2v-2.5" />
+                        <path d="M10 23h8m-8 8h24" />
+                        <circle cx="34" cy="16" r="6" fill="currentColor" stroke-linejoin="round" />
+                        <path stroke-linejoin="round" d="M44 28.419C42.047 24.602 38 22 34 22s-5.993 1.133-8.05 3" />
+                      </g>
+                    </svg>
+                  </span>
+                  <span class="checkbox-label">{{permissionslist[item]}}</span>
+                </span>
+              </label>
+            </div>
+          }
+        </div>
+            <app-form-input-error [control]="userForm.get('permissions')!"
+                    [errorMessages]="getErrorMessages('permissions')" [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+        </fieldset>
+
+        <!-- Botón para guardar -->
+        <fieldset class="save-btn">
+          <button type="submit" class="button-24"><svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em"
+              viewBox="0 0 24 24">
+              <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="M8 4H6a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.828a2 2 0 0 0-.586-1.414l-1.828-1.828A2 2 0 0 0 16.172 4H15M8 4v4a1 1 0 0 0 1 1h5a1 1 0 0 0 1-1V4M8 4h7M7 17v-3a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v3" />
+            </svg></button>
+        </fieldset>
+      </form>
+    </div>
+    }
+  </div>
   }
 </div>

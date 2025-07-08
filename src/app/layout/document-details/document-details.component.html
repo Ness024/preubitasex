@@ -1,5 +1,5 @@
 <section>
-  @if (document) {
+  @if (document && document.id) {
   <div class="document-details">
     <div class="document-details__actions">
       @if(permissions.update) {
@@ -36,15 +36,15 @@
       <div style="position: relative;" class="info-card estatus_{{ document.status_id }}">
         <h4 style="color: black">Estado</h4>
         <p style="font-weight: bold">{{ document.status.name }}</p>
-        <button class="changestatus" (click)="changestatus()">
-          <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24"><path fill="currentColor" d="m12.05 19l2.85-2.825l-2.85-2.825L11 14.4l1.075 1.075q-.7.025-1.362-.225t-1.188-.775q-.5-.5-.763-1.15t-.262-1.3q0-.425.113-.85t.312-.825l-1.1-1.1q-.425.625-.625 1.325T7 12q0 .95.375 1.875t1.1 1.65t1.625 1.088t1.85.387l-.95.95zm4.125-4.25q.425-.625.625-1.325T17 12q0-.95-.363-1.888T15.55 8.45t-1.638-1.075t-1.862-.35L13 6.05L11.95 5L9.1 7.825l2.85 2.825L13 9.6l-1.1-1.1q.675 0 1.375.263t1.2.762t.763 1.15t.262 1.3q0 .425-.112.85t-.313.825zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"/></svg>
+        <button class="changestatus" (click)="changestatus()" matTooltip="Cambiar estado" matTooltipPosition="above">
+          <svg xmlns="http://www.w3.org/2000/svg" width="3em" height="3em" viewBox="0 0 24 24"><path fill="currentColor" d="m12.05 19l2.85-2.825l-2.85-2.825L11 14.4l1.075 1.075q-.7.025-1.362-.225t-1.188-.775q-.5-.5-.763-1.15t-.262-1.3q0-.425.113-.85t.312-.825l-1.1-1.1q-.425.625-.625 1.325T7 12q0 .95.375 1.875t1.1 1.65t1.625 1.088t1.85.387l-.95.95zm4.125-4.25q.425-.625.625-1.325T17 12q0-.95-.363-1.888T15.55 8.45t-1.638-1.075t-1.862-.35L13 6.05L11.95 5L9.1 7.825l2.85 2.825L13 9.6l-1.1-1.1q.675 0 1.375.263t1.2.762t.763 1.15t.262 1.3q0 .425-.112.85t-.313.825zM12 22q-2.075 0-3.9-.788t-3.175-2.137T2.788 15.9T2 12t.788-3.9t2.137-3.175T8.1 2.788T12 2t3.9.788t3.175 2.137T21.213 8.1T22 12t-.788 3.9t-2.137 3.175t-3.175 2.138T12 22m0-2q3.35 0 5.675-2.325T20 12t-2.325-5.675T12 4T6.325 6.325T4 12t2.325 5.675T12 20m0-8"/></svg>
         </button>
       </div>
     </div>
     <div class="info-grid">
       <div class="info-card">
         <h4>📅 Fecha de Elaboración</h4>
-        <p>{{ document.created_at }}</p>
+        <p>{{ document.issue_date }}</p>
       </div>
       <div class="info-card">
         <h4>📥 Fecha de recepción</h4>
@@ -179,7 +179,7 @@
       </div>
     </div>
     <section class="aa0">
-      @for (comment of coments; track $index) {
+      @for (comment of coments || []; track $index) {
       <div class="af9">
         <div class="af7">
           <div class="ag5">
@@ -225,7 +225,7 @@
     @if (changestatusopen) {
     <div class="modal-overlays" >
       <div class="modal-contents">
-        <app-changestatus [documentId]="document.id" [sendStatusId]="document.status_id" (closed)="cerrarModal()">
+        <app-changestatus [documentId]="document.id" [sendStatusId]="document.status_id" [reference_number]="document.reference_number" (closed)="cerrarModal()">
         </app-changestatus>
 
         <button class="modal-button" (click)="cerrarModal()">

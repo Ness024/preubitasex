@@ -3,6 +3,8 @@ import { FormGroup, FormControl, Validators, FormArray, ReactiveFormsModule } fr
 import { ActivatedRoute, Router } from '@angular/router';
 import { NotificationService } from '../../service/notification.service';
 import { UdaService } from '../../service/uda.service';
+import { FormInputErrorComponent } from '../../shared/form-input-error/form-input-error.component';
+import { FORM_ERROR_MESSAGES } from '../../shared/constants/form-error-messages';
 
 export interface User{
   name: string,
@@ -14,11 +16,13 @@ export interface User{
 
 @Component({
   selector: 'app-admin-edit-user',
-  imports: [ReactiveFormsModule],
+  imports: [ReactiveFormsModule, FormInputErrorComponent],
   templateUrl: './admin-edit-user.component.html',
   styleUrl: './admin-edit-user.component.css'
 })
 export class AdminEditUserComponent {
+  errorMessages = FORM_ERROR_MESSAGES;
+  formSubmitted = false;
   user: User = {
     name: '',
     username: '',
@@ -100,5 +104,13 @@ export class AdminEditUserComponent {
     }
   }
 }
+getErrorMessages(fieldName: string): any {
+  const msg = this.errorMessages[fieldName as keyof typeof this.errorMessages];
+  if (typeof msg === 'string') {
+    return { required: msg };
+  }
+  return msg || {};
+}
+
 
 }

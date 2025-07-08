@@ -1,82 +1,112 @@
-@if(isLoading){
-    <div class="border-container">
-        @if (dataSource.data.length > 0) {
-            <table mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="Nombre">
-                <th mat-header-cell *matHeaderCellDef> NOMBRE </th>
-                <td mat-cell *matCellDef="let doc">
-                    <button class="button-name"  [routerLink]="['/main/detalles', doc.id]">
-                        {{doc.title}}
-                    </button>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Tipo">
-                <th mat-header-cell *matHeaderCellDef> TIPO </th>
-                <td mat-cell *matCellDef="let element"> {{element.category?.name}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Fecha de recepción">
-                <th mat-header-cell *matHeaderCellDef> FECHA DE RECEPCIÓN </th>
-                <td mat-cell *matCellDef="let element"> {{element.received_date}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Fecha de registro">
-                <th mat-header-cell *matHeaderCellDef> FECHA DE EMISION </th>
-                <td mat-cell *matCellDef="let element"> {{element.issue_date}} </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Estatus">
-                <th mat-header-cell *matHeaderCellDef> ESTATUS </th>
-                <td mat-cell *matCellDef="let element">
-                    <span class="estatus estatus_{{element.status?.id}}">
-                        {{element.status?.name}}
-                    </span>
-                </td>
-            </ng-container>
-
-            <ng-container matColumnDef="Acciones">
-                <th mat-header-cell *matHeaderCellDef> ACCIONES</th>
-                <td mat-cell *matCellDef="let element">
-                    @if(permissions.update){
-                        <button class="editbtn btn" [routerLink]="['/main/editar', element.id.toString()]">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
-                            <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 21h18M12.222 5.828L15.05 3L20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 0 0-.293.707v4.536h4.536a1 1 0 0 0 .707-.293l5.607-5.607m-4.95-4.95l4.95 4.95"/>
-                        </svg>
-                        </button>
-                    }
-                    @if(permissions.delete){
-                        <button class="deletebtn btn" (click)="openDialog(element.id)">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
-                            <path fill="currentColor" d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z"/>
-                        </svg>
-                        </button>
-                    }
-                </td>
-            </ng-container>
-            <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
-            <tr mat-row *matRowDef="let row; columns: columnsToDisplay;"></tr>
-        </table>
-        <div class="pagination" >
-            <button class="pag-btn" (click)="getDocs(currentPage-1)" [disabled]="currentPage<=1">Previo</button>
-            @for (page of getPagesArray(); track page) {
-                <button 
-                class="pag-btn"
-                (click)="getDocs(page)"
-                [class.active]="page === currentPage">
-                {{page}}</button>
-            }
-            <button class="pag-btn" (click)="getDocs(currentPage+1)" [disabled]="currentPage>=lastPage" >Siguiente</button>
-        </div>
-        } @else {
-            <div class="no-data">
-                <p>Sin documentos</p>
-            </div>
-        }
-    </div>  
-} 
-@if (isLoading === false) {
+<div class="border-container">
+    @if(isLoading){
     <div class="loading-container">
         <mat-spinner [diameter]="50"></mat-spinner>
     </div>
-}
+    } @else {
+    @if (dataSource.data.length > 0) {
+    <table mat-table [dataSource]="dataSource">
+        <ng-container matColumnDef="numero">
+            <th mat-header-cell *matHeaderCellDef> # </th>
+            <td mat-cell *matCellDef="let element; let i = index"> {{(currentPage - 1) * perPage.value + i + 1 }} </td>
+        </ng-container>
+        <ng-container matColumnDef="Referencia">
+            <th mat-header-cell *matHeaderCellDef>NÚMERO</th>
+            <td mat-cell *matCellDef="let doc">
+                <button class="button-name" [routerLink]="['/main/detalles', doc.id]"
+                [matTooltip]="doc.description"
+                matTooltipPosition="above">
+                    {{doc.reference_number}}
+                </button>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="Nombre">
+            <th mat-header-cell *matHeaderCellDef> NOMBRE </th>
+            <td mat-cell *matCellDef="let doc">
+                <button class="button-name" [routerLink]="['/main/detalles', doc.id]">
+                    {{doc.title}}
+                </button>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Tipo">
+            <th mat-header-cell *matHeaderCellDef> TIPO </th>
+            <td mat-cell *matCellDef="let element"> {{element.category?.name}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Fecha de registro">
+            <th mat-header-cell *matHeaderCellDef> FECHA DE ELABORACION </th>
+            <td mat-cell *matCellDef="let element"> {{element.issue_date}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Fecha de recepción">
+            <th mat-header-cell *matHeaderCellDef> FECHA DE RECEPCIÓN </th>
+            <td mat-cell *matCellDef="let element"> {{element.received_date}} </td>
+        </ng-container>
+
+        
+        <ng-container matColumnDef="Estatus">
+            <th mat-header-cell *matHeaderCellDef> ESTATUS </th>
+            <td mat-cell *matCellDef="let element">
+                <span class="estatus estatus_{{element.status?.id}}">
+                    {{element.status?.name}}
+                </span>
+            </td>
+        </ng-container>
+
+        <ng-container matColumnDef="Acciones">
+            <th mat-header-cell *matHeaderCellDef> ACCIONES</th>
+            <td mat-cell *matCellDef="let element">
+                @if(permissions.update){
+                <button class="editbtn btn" [routerLink]="['/main/editar', element.id.toString()]">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                        <path fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="1.5"
+                            d="M3 21h18M12.222 5.828L15.05 3L20 7.95l-2.828 2.828m-4.95-4.95l-5.607 5.607a1 1 0 0 0-.293.707v4.536h4.536a1 1 0 0 0 .707-.293l5.607-5.607m-4.95-4.95l4.95 4.95" />
+                    </svg>
+                </button>
+                }
+                @if(permissions.delete){
+                <button class="deletebtn btn" (click)="openDialog(element.id)">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="2em" height="2em" viewBox="0 0 24 24">
+                        <path fill="currentColor"
+                            d="M19 4h-3.5l-1-1h-5l-1 1H5v2h14M6 19a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V7H6z" />
+                    </svg>
+                </button>
+                }
+            </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="columnsToDisplay"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnsToDisplay; trackBy: trackById"></tr>
+    </table>
+
+    } @else {
+    <div class="no-data">
+        <p>Sin documentos</p>
+    </div>
+    }
+    }
+    @if (dataSource.data.length > 0) {
+    <div class="pagination">
+        <div class="pagination-perpage">
+            <label for="perPageInput"> Documentos por página:</label>
+            <input id="perPageInput" type="number" min="10" [formControl]="perPage" />
+        </div>
+        <div class="pagination-pages">
+            <button class="pag-btn" (click)="getDocs(currentPage-1)" [disabled]="currentPage<=1">Previo</button>
+            @for (page of getPagesArray(); track page) {
+            <button class="pag-btn" (click)="getDocs(page)" [class.active]="page === currentPage">
+                {{page}}</button>
+            }
+            <button class="pag-btn" (click)="getDocs(currentPage+1)"
+                [disabled]="currentPage>=lastPage">Siguiente</button>
+        </div>
+        <div class="pagination-total">
+            <p>Página {{currentPage}} de {{lastPage}} </p>
+        </div>
+        <div class="pagination-total-docs">
+            <p>{{pgtotal}} documentos</p>
+        </div>
+    </div>
+    }
+</div>

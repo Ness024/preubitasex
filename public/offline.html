@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sin conexión - Secretaría Administrativa</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      text-align: center;
+      background: white;
+      padding: 3rem;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 90%;
+    }
+    .logo {
+      width: 120px;
+      height: auto;
+      margin-bottom: 1.5rem;
+    }
+    h1 {
+      color: #1976d2;
+      margin-bottom: 1rem;
+      font-size: 1.8rem;
+    }
+    p {
+      color: #666;
+      line-height: 1.6;
+      margin-bottom: 1.5rem;
+    }
+    .status {
+      background: #e3f2fd;
+      color: #1976d2;
+      padding: 1rem;
+      border-radius: 8px;
+      border-left: 4px solid #1976d2;
+      margin-bottom: 1.5rem;
+    }
+    .retry-btn {
+      background: #1976d2;
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background 0.3s;
+    }
+    .retry-btn:hover {
+      background: #1565c0;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <img src="Logo_SAy.png" alt="Logo Secretaría Administrativa" class="logo">
+    <h1>Sin conexión al servidor</h1>
+    <div class="status">
+      <strong>Estado:</strong> Servidor no disponible
+    </div>
+    <p>
+      El servidor de la Secretaría Administrativa no está disponible en este momento. 
+      Por favor, verifica tu conexión de red o contacta al administrador del sistema.
+    </p>
+    <button class="retry-btn" onclick="window.location.reload()">
+      Reintentar conexión
+    </button>
+  </div>
+</body>
+</html> 

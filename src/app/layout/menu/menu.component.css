@@ -95,3 +95,22 @@ svg:hover{
   width: fit-content;
   justify-self: flex-end;
 }
+
+.footer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #B5862A;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.75rem;
+  color: white;
+  box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.footer p {
+  margin: 0.2rem 0;
+  font-size: 0.7rem;
+  line-height: 1.2;
+}

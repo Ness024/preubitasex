@@ -15,8 +15,8 @@
             </fieldset>
 
             <!-- Username -->
-            <label for="username">Alias (Username)</label>
             <fieldset class="form-group title">
+                <label for="username">Alias (Username)</label>
                 <input formControlName="username" class="input-form" type="text" id="username" name="username"
                     placeholder="Username" required="" [class.is-invalid]="userForm.get('username')?.invalid &&
                             (userForm.get('username')?.touched || formSubmitted)" />
@@ -49,6 +49,25 @@
                     [showOnSubmit]="formSubmitted">
                 </app-form-input-error>
             </fieldset>
+
+            <!-- Departamento -->
+            @if(userForm.get('role')?.value === 'user'){
+            <fieldset class="form-group title">
+                <label for="department">Departamento</label>
+                <select formControlName="department" class="input-form" id="department" name="department" 
+                    [class.is-invalid]="userForm.get('department')?.invalid &&
+                            (userForm.get('department')?.touched || formSubmitted)">
+                    <option value="" disabled selected>Selecciona una opción</option>
+                    @for (department of departments; track $index) {
+                    <option value="{{department.id}}">{{department.name}}</option>
+                    }
+                </select>
+                <app-form-input-error [control]="userForm.get('department')!" [errorMessages]="getErrorMessages('department')"
+                    [showOnSubmit]="formSubmitted">
+                </app-form-input-error>
+            </fieldset>
+            }
+
             <fieldset class="form-group title">
                 <label for="permissions">Permisos</label>
                 <div class="permissions-content">
